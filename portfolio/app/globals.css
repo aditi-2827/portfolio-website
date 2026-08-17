@@ -1,0 +1,1447 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS
+   Single source of truth for all design decisions.
+   Accent: Warm Ember Orange (#E8531A)
+   Canvas: Warm Paper (#F6F4F0)
+───────────────────────────────────────────────────────────── */
+:root {
+  /* Color */
+  /* Shifted slightly cooler/darker than warm-paper — more technical, less lifestyle */
+  --color-canvas:       #EDEAE4;
+  --color-surface:      #F7F5F2;
+  --color-ink:          #131110;
+  --color-muted:        #7A7570;
+  --color-border:       #D8D4CC;
+  --color-accent:       #E8531A;
+  --color-accent-dark:  #CC4615;
+  --color-accent-fg:    #FFFFFF;
+  --color-footer-bg:    #131110;
+  /* Technical detail tints — used sparingly */
+  --color-rule:         #C8C3BB;   /* slightly darker rule for structural lines */
+  --color-index:        #9A9590;   /* section index numbers */
+
+  /* Typography */
+  --font-display: var(--font-cabinet), 'Cabinet Grotesk', sans-serif;
+  --font-body:    var(--font-outfit), 'Outfit', sans-serif;
+  --font-mono:    var(--font-jetbrains), 'JetBrains Mono', monospace;
+
+  /* Type Scale */
+  --text-xs:       0.75rem;
+  --text-sm:       0.875rem;
+  --text-base:     1rem;
+  --text-lg:       1.125rem;
+  --text-xl:       1.25rem;
+  --text-2xl:      1.5rem;
+  --text-4xl:      2.25rem;
+  /* Slightly larger ceiling — more expressive at wide viewports */
+  --text-display:  clamp(3rem, 9vw, 9.5rem);
+  --text-headline: clamp(1.75rem, 4vw, 3.75rem);
+  --text-index:    0.65rem;   /* Section index numbers — smaller than xs */
+
+  /* Spacing */
+  --space-1:    0.25rem;
+  --space-2:    0.5rem;
+  --space-4:    1rem;
+  --space-6:    1.5rem;
+  --space-8:    2rem;
+  --space-12:   3rem;
+  --space-16:   4rem;
+  --space-24:   6rem;
+  --space-32:   8rem;
+  --section-gap: clamp(5rem, 10vw, 9rem);
+
+  /* Layout */
+  --container-max: 1320px;
+  --container-pad: clamp(1.5rem, 4vw, 5rem);
+
+  /* Animation Easing */
+  --ease-out-strong:   cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-sharp: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-default:      cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  /* Border Radius */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TAILWIND v4 THEME MAPPING
+   Expose design tokens to Tailwind's utility system
+───────────────────────────────────────────────────────────── */
+@theme inline {
+  --color-background: var(--color-canvas);
+  --color-foreground: var(--color-ink);
+  --color-accent:     var(--color-accent);
+  --color-muted:      var(--color-muted);
+  --color-border:     var(--color-border);
+  --font-sans:        var(--font-body);
+  --font-mono:        var(--font-mono);
+  --font-display:     var(--font-display);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BASE RESET
+───────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* Smooth scroll — accessible override in reduced-motion block below */
+  scroll-behavior: smooth;
+  /* Prevent font scaling on orientation change */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: 1.6;
+  /* Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1;
+  min-height: 100dvh;
+  /* Prevent horizontal overflow */
+  overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TYPOGRAPHY DEFAULTS
+───────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+}
+
+p {
+  max-width: 65ch;
+  line-height: 1.7;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+code, kbd, samp, pre {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   IMAGES & MEDIA
+───────────────────────────────────────────────────────────── */
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SELECTION
+───────────────────────────────────────────────────────────── */
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-accent-fg);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   FOCUS STYLES
+   Visible, distinctive, brand-consistent.
+   Using focus-visible to avoid showing rings on mouse clicks.
+───────────────────────────────────────────────────────────── */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   INTERACTIVE ELEMENTS
+   Minimum 44px tap target; consistent cursor
+───────────────────────────────────────────────────────────── */
+button,
+[role="button"],
+a,
+label[for],
+select {
+  cursor: pointer;
+}
+
+button,
+[role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+  border: none;
+  background: none;
+  font: inherit;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   LAYOUT UTILITIES
+   Container pattern used across all sections
+───────────────────────────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SKIP TO CONTENT
+   Hidden until focused — first DOM element for a11y
+───────────────────────────────────────────────────────────── */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  z-index: 9999;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: top 0.15s var(--ease-out-strong);
+}
+
+.skip-to-content:focus-visible {
+  top: var(--space-4);
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   REDUCED MOTION
+   Disable all non-essential animation and transitions.
+   Applied globally — individual components read
+   useReducedMotion() for Motion-specific control.
+───────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   NAV COMPONENT
+   Fixed top navigation. Scroll-aware separator via data-scrolled
+   attribute. Hover underlines: CSS clip-path only — no JS state.
+───────────────────────────────────────────────────────────── */
+.nav-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  /* Transparent by default — blends with canvas */
+  background-color: transparent;
+  transition: background-color 300ms var(--ease-out-strong),
+              border-color 300ms var(--ease-out-strong);
+  border-bottom: 1px solid transparent;
+}
+
+/* Scrolled state: add subtle visual separation from content below */
+.nav-root[data-scrolled="true"] {
+  background-color: var(--color-canvas);
+  border-bottom-color: var(--color-border);
+  /* Subtle backdrop blur — only applied in scrolled state */
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 3.5rem; /* 56px */
+  gap: var(--space-8);
+}
+
+/* ── Wordmark ───────────────────────────────────────────────── */
+.nav-wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-sm);
+  color: var(--color-ink);
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  /* Minimum tap target */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  /* Subtle fade on hover — tasteful, not dramatic */
+  opacity: 1;
+  transition: opacity 200ms var(--ease-out-strong);
+}
+
+.nav-wordmark:hover {
+  opacity: 0.65;
+}
+
+/* ── Nav links list ─────────────────────────────────────────── */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  list-style: none;
+}
+
+/* ── Individual link ───────────────────────────────────────────── */
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Minimum tap target height without forcing visual height */
+  min-height: 44px;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--color-ink);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  /* Bumped from 0.65 — more present at rest, still sharpens on hover */
+  opacity: 0.8;
+  transition: opacity 180ms var(--ease-out-strong);
+}
+
+.nav-link:hover {
+  opacity: 1;
+}
+
+/* ── Clip-path underline ────────────────────────────────────── */
+/* Orange underline slides in from left on hover — pure CSS.
+   clip-path: inset() is hardware-accelerated and avoids layout. */
+.nav-link-underline {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background-color: var(--color-accent);
+  /* Start fully clipped (hidden on the right side) */
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 200ms var(--ease-out-strong);
+  /* Do not interfere with pointer events */
+  pointer-events: none;
+}
+
+.nav-link:hover .nav-link-underline,
+.nav-link:focus-visible .nav-link-underline {
+  /* Reveal from left to right */
+  clip-path: inset(0 0% 0 0);
+}
+
+/* Active page link — underline permanently visible */
+.nav-link[aria-current="page"] {
+  opacity: 1;
+}
+
+.nav-link[aria-current="page"] .nav-link-underline {
+  clip-path: inset(0 0% 0 0);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .nav-links {
+    gap: var(--space-6);
+  }
+
+  .nav-link {
+    font-size: 0.65rem;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TYPOGRAPHY UTILITIES
+   Small set of utility classes mapping design tokens to Tailwind-
+   compatible patterns. Used across all future components.
+───────────────────────────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.text-display {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.text-headline {
+  font-family: var(--font-display);
+  font-size: var(--text-headline);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.text-muted {
+  color: var(--color-muted);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   HERO COMPONENT
+   Left-aligned, min-height: 100dvh.
+   Content sits slightly above vertical center via padding-top.
+───────────────────────────────────────────────────────────── */
+.hero-section {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  /* Push content above true center — editorial, not centered */
+  padding-top: 7rem;
+  padding-bottom: 4rem;
+}
+
+.hero-inner {
+  width: 100%;
+}
+
+/* Content occupies 8 of 12 columns at desktop — right 4 cols breathe */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 820px;
+}
+
+/* ── Role label ─────────────────────────────────────────────── */
+/* Anchored with a left accent border — structural scaffold feel.
+   The border provides visual weight without decorating the text. */
+.hero-role {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--color-muted);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  margin: 0;
+  /* Left border — accent orange, 1.5px — same weight as underlines */
+  border-left: 1.5px solid var(--color-accent);
+  padding-left: var(--space-4);
+  /* Slightly reduced line-height for mono at small size */
+  line-height: 1.4;
+}
+
+/* ── Name ───────────────────────────────────────────────────── */
+.hero-name {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  font-weight: 800;
+  color: var(--color-ink);
+  line-height: 0.93;
+  letter-spacing: -0.04em;
+  /* Break across lines cleanly */
+  word-break: break-word;
+  margin: 0;
+}
+
+/* ── Blinking cursor ────────────────────────────────────────── */
+/* Orange em-dash attached immediately after the name on the same baseline.
+   Blinks continuously with a simple opacity blink. */
+@keyframes cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 99% { opacity: 0; }
+}
+
+.hero-cursor {
+  display: inline-block;
+  width: 0.32em;
+  height: 0.085em;
+  background-color: var(--color-accent);
+  margin-left: 0.1em;
+  vertical-align: 0.22em;
+  animation: cursor-blink 800ms step-end infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cursor {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ── Subtext ────────────────────────────────────────────────── */
+.hero-subtext {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 300;
+  color: var(--color-muted);
+  line-height: 1.65;
+  max-width: 50ch;
+  margin: 0;
+}
+
+/* ── Links ──────────────────────────────────────────────────── */
+.hero-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+  /* Space between subtext and links */
+  margin-top: var(--space-2);
+}
+
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  min-height: 44px;
+  /* Active press feedback */
+  transition: transform 160ms ease-out, opacity 160ms ease-out;
+}
+
+.hero-link:active {
+  transform: scale(0.97);
+}
+
+/* Primary link: orange accent underline on hover (clip-path, same as nav) */
+.hero-link--primary {
+  position: relative;
+  color: var(--color-ink);
+  letter-spacing: 0.01em;
+}
+
+.hero-link--primary::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background-color: var(--color-accent);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 200ms var(--ease-out-strong);
+}
+
+.hero-link--primary:hover::after,
+.hero-link--primary:focus-visible::after {
+  clip-path: inset(0 0% 0 0);
+}
+
+.hero-link-arrow {
+  display: inline-block;
+  transition: transform 200ms var(--ease-out-strong);
+}
+
+.hero-link--primary:hover .hero-link-arrow {
+  transform: translateX(4px);
+}
+
+/* Secondary link: muted, fades to ink on hover */
+.hero-link--secondary {
+  color: var(--color-muted);
+  letter-spacing: 0.01em;
+  transition: color 180ms var(--ease-default),
+              transform 160ms ease-out;
+}
+
+.hero-link--secondary:hover {
+  color: var(--color-ink);
+}
+
+/* ── Hero responsive ────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .hero-section {
+    padding-top: 6rem;
+    padding-bottom: 3rem;
+  }
+
+  .hero-content {
+    gap: var(--space-5, 1.25rem);
+  }
+
+  .hero-subtext {
+    font-size: var(--text-base);
+    max-width: 45ch;
+  }
+
+  .hero-links {
+    gap: var(--space-6);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ABOUT COMPONENT
+   No photo. Ghost monogram "AP" provides right-column visual
+   weight. Absolutely positioned, clipped at container edge.
+───────────────────────────────────────────────────────────── */
+.about-section {
+  scroll-margin-top: 4rem;
+  padding-top: var(--section-gap);
+  padding-bottom: var(--section-gap);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Constrains the ghost monogram so it doesn't cause page overflow */
+.about-inner {
+  position: relative;
+  /* 8 of 12 col inset from col-start-3 equivalent */
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Ghost monogram ─────────────────────────────────────────── */
+/* Purely decorative. aria-hidden="true" in JSX.
+   Positioned to the right, partially outside content bounds.
+   ~6% opacity — visible as texture, not readable as text. */
+.about-monogram {
+  position: absolute;
+  /* Right edge, partially clipped by overflow:hidden on section */
+  right: -0.1em;
+  top: 50%;
+  transform: translateY(-52%);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(12rem, 28vw, 22rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--color-ink);
+  /* ~6% opacity — texture, not legible foreground */
+  opacity: 0.055;
+  /* Prevent interaction or selection */
+  pointer-events: none;
+  user-select: none;
+  /* Isolate compositing — GPU layer for opacity */
+  will-change: opacity;
+  /* Don't clip on this element — let section handle it */
+  white-space: nowrap;
+}
+
+/* ── Content column ─────────────────────────────────────────── */
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  /* Right padding creates space for the ghost monogram on desktop */
+  padding-right: clamp(0px, 18vw, 240px);
+}
+
+/* ── Section heading ────────────────────────────────────────── */
+/* ::before pseudo adds a small index marker in JetBrains Mono.
+   Positioned absolutely above-left of the heading text.
+   Does not affect layout flow — purely structural detail. */
+.about-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-headline);
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0;
+  /* Visual separator above heading */
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-rule);
+  /* Position context for index number pseudo-element */
+  position: relative;
+}
+
+/* Section index marker — technical coordinate feel */
+.about-heading::before {
+  content: '01';
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-index, 0.65rem);
+  font-weight: 400;
+  color: var(--color-index, #9A9590);
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-4);
+  /* Does not inherit Cabinet Grotesk tracking */
+  letter-spacing: 0.12em;
+}
+
+/* ── Body paragraphs ────────────────────────────────────────── */
+.about-body {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 300;
+  color: var(--color-ink);
+  line-height: 1.7;
+  max-width: 60ch;
+  margin: 0;
+}
+
+/* ── Metadata line ──────────────────────────────────────────── */
+.about-meta {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--color-muted);
+  letter-spacing: 0.06em;
+  margin: 0;
+  /* Space above metadata */
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+/* ── About responsive ───────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Hide ghost monogram on mobile — too large, interferes with content */
+  .about-monogram {
+    display: none;
+  }
+
+  .about-content {
+    padding-right: 0;
+    gap: var(--space-6);
+  }
+
+  .about-body {
+    font-size: var(--text-base);
+  }
+
+  .about-inner {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SECTION DIVIDER
+   Horizontal rule used between major sections.
+   Full-width, 1px, --color-border.
+───────────────────────────────────────────────────────────── */
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-border);
+  border: none;
+  margin: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PROJECTS COMPONENT
+   Editorial horizontal row list — zero cards.
+   Full-width with 1px dividers. Hover inverts each row to dark.
+   Preview image reveals via clip-path on desktop hover only.
+───────────────────────────────────────────────────────────── */
+.projects-section {
+  padding-top: var(--section-gap);
+  padding-bottom: var(--section-gap);
+}
+
+/* ── Section heading ────────────────────────────────────────── */
+.projects-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-headline);
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0;
+  margin-bottom: var(--space-12);
+  position: relative;
+  /* Section index marker */
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-rule);
+}
+
+.projects-heading::before {
+  content: '02';
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-index, 0.65rem);
+  font-weight: 400;
+  color: var(--color-index, #9A9590);
+  letter-spacing: 0.12em;
+  margin-bottom: var(--space-4);
+}
+
+/* ── Row list ───────────────────────────────────────────────── */
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  /* Top border on the list, bottom border via each row */
+  border-top: 1px solid var(--color-border);
+}
+
+/* ── Individual row ─────────────────────────────────────────── */
+.project-row {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  color: var(--color-ink);
+  /* Bottom border acts as row separator */
+  border-bottom: 1px solid var(--color-border);
+  overflow: hidden;
+  /* Keyboard focus ring */
+  outline: none;
+  transition: background-color 180ms ease-out,
+              color 180ms ease-out;
+}
+
+.project-row:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+/* ── Row inner layout ───────────────────────────────────────── */
+.project-row-inner {
+  display: grid;
+  /* index | title+desc | meta+arrow */
+  grid-template-columns: 3rem 1fr auto;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-6) 0;
+  position: relative;
+  z-index: 1;
+  transition: color 180ms ease-out;
+}
+
+/* ── Index number ───────────────────────────────────────────── */
+.project-index {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--color-muted);
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  transition: color 180ms ease-out;
+}
+
+/* ── Title + description ────────────────────────────────────── */
+.project-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.project-title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.2vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  transition: color 180ms ease-out;
+  /* Prevent long titles from breaking layout */
+  word-break: break-word;
+}
+
+.project-desc {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 300;
+  color: var(--color-muted);
+  line-height: 1.5;
+  max-width: 55ch;
+  transition: color 180ms ease-out;
+}
+
+/* ── Meta: tags + arrow ─────────────────────────────────────── */
+.project-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.project-tag {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--color-muted);
+  letter-spacing: 0.06em;
+  border: 1px solid var(--color-border);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  transition: color 180ms ease-out,
+              border-color 180ms ease-out;
+}
+
+.project-arrow {
+  display: block;
+  font-size: var(--text-lg);
+  color: var(--color-muted);
+  transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1),
+              color 180ms ease-out;
+}
+
+/* ── Preview image (absolutely positioned, clip-path reveal) ── */
+.project-preview {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 400px;
+  max-width: 40%;
+  z-index: 0;
+  pointer-events: none;
+  /* Fully clipped at rest — reveals on hover */
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 220ms cubic-bezier(0.23, 1, 0.32, 1);
+  overflow: hidden;
+}
+
+/* Inner wrapper — position:relative is required by next/image fill */
+.project-preview-inner {
+  position: absolute;
+  inset: 0;
+}
+
+/* next/image sets inline styles; this class provides object-fit */
+.project-preview-img {
+  object-fit: cover !important;
+  object-position: top center !important;
+}
+
+/* Placeholder treatment — used when no real screenshot is available */
+.project-preview--placeholder {
+  background-color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-preview-label {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  font-weight: 800;
+  color: var(--color-canvas);
+  opacity: 0.08;
+  letter-spacing: -0.04em;
+  user-select: none;
+}
+
+/* ── Hover effects — desktop pointer only ───────────────────── */
+@media (hover: hover) and (pointer: fine) {
+  .project-row:hover {
+    background-color: var(--color-ink);
+    color: var(--color-canvas);
+  }
+
+  .project-row:hover .project-index {
+    color: var(--color-canvas);
+    opacity: 0.4;
+  }
+
+  .project-row:hover .project-title {
+    color: var(--color-canvas);
+  }
+
+  .project-row:hover .project-desc {
+    color: var(--color-canvas);
+    opacity: 0.65;
+  }
+
+  .project-row:hover .project-tag {
+    color: var(--color-canvas);
+    border-color: rgba(255,255,255,0.15);
+    opacity: 0.7;
+  }
+
+  .project-row:hover .project-arrow {
+    color: var(--color-canvas);
+    transform: translateX(8px);
+  }
+
+  .project-row:hover .project-preview {
+    clip-path: inset(0 0% 0 0);
+  }
+}
+
+/* Mobile preview image — hidden on desktop, clean responsive block on mobile */
+.project-preview-mobile {
+  display: none;
+}
+
+/* ── Mobile tags (inline below desc on mobile, hidden on desktop) */
+.project-tags--mobile {
+  display: none;
+}
+
+/* ── Projects responsive ────────────────────────────────────── */
+@media (max-width: 767px) {
+  .projects-heading {
+    margin-bottom: var(--space-8);
+  }
+
+  .project-row-inner {
+    grid-template-columns: 2.5rem 1fr;
+    gap: var(--space-4);
+    padding: var(--space-6) 0;
+  }
+
+  .project-meta {
+    display: none;
+  }
+
+  .project-preview-mobile {
+    display: block;
+    margin-top: 0.75rem;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+  }
+
+  .project-preview-mobile-img {
+    width: 100%;
+    height: auto;
+    max-height: 220px;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+
+  .project-tags--mobile {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: 0.75rem;
+  }
+
+  .project-title {
+    font-size: 1.15rem;
+  }
+
+  .project-preview {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .project-row-inner {
+    grid-template-columns: 3rem 1fr auto;
+    gap: var(--space-6);
+  }
+
+  .project-tags {
+    display: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SKILLS COMPONENT
+   Two-column editorial text list.
+   Category label left (JetBrains Mono, muted, uppercase, tracked).
+   Skill items right (Outfit, normal, dot-separated).
+   No bubbles, bars, icons, or ratings.
+───────────────────────────────────────────────────────────── */
+.skills-section {
+  padding-top: var(--section-gap);
+  padding-bottom: var(--section-gap);
+}
+
+/* ── Section heading ────────────────────────────────────────── */
+.skills-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-headline);
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0;
+  margin-bottom: var(--space-12);
+  position: relative;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-rule);
+}
+
+.skills-heading::before {
+  content: '03';
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-index, 0.65rem);
+  font-weight: 400;
+  color: var(--color-index, #9A9590);
+  letter-spacing: 0.12em;
+  margin-bottom: var(--space-4);
+}
+
+/* ── Grid of categories ─────────────────────────────────────── */
+.skills-grid {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ── One category row ───────────────────────────────────────── */
+.skills-category {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  align-items: baseline;
+  gap: var(--space-8);
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ── Category label ─────────────────────────────────────────── */
+.skills-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--color-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  padding-top: 0.15em; /* optical baseline alignment with Outfit */
+}
+
+/* ── Skill items ────────────────────────────────────────────── */
+.skills-items {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  color: var(--color-ink);
+  line-height: 1.6;
+}
+
+/* ── Skills responsive ──────────────────────────────────────── */
+@media (max-width: 640px) {
+  .skills-category {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    padding: var(--space-5) 0;
+  }
+
+  .skills-heading {
+    margin-bottom: var(--space-8);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   EXPLORING COMPONENT
+   Format: ➔ [Topic] — [Note]
+   ➔ in Ember Orange accent.
+───────────────────────────────────────────────────────────── */
+.exploring-section {
+  padding-top: var(--section-gap);
+  padding-bottom: var(--section-gap);
+}
+
+.exploring-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-headline);
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0;
+  margin-bottom: var(--space-12);
+  position: relative;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-rule);
+}
+
+.exploring-heading::before {
+  content: '04';
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-index, 0.65rem);
+  font-weight: 400;
+  color: var(--color-index, #9A9590);
+  letter-spacing: 0.12em;
+  margin-bottom: var(--space-4);
+}
+
+.exploring-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+}
+
+.exploring-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.exploring-arrow {
+  font-size: var(--text-sm);
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.exploring-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+}
+
+.exploring-topic {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.exploring-sep {
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+
+.exploring-note {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 300;
+  color: var(--color-muted);
+  max-width: 60ch;
+}
+
+@media (max-width: 640px) {
+  .exploring-heading {
+    margin-bottom: var(--space-8);
+  }
+
+  .exploring-item {
+    padding: var(--space-5) 0;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   CONTACT COMPONENT
+   Large display type, mailto link, social links.
+───────────────────────────────────────────────────────────── */
+.contact-section {
+  padding-top: var(--section-gap);
+  padding-bottom: clamp(6rem, 12vw, 10rem);
+}
+
+.contact-inner {
+  max-width: 820px;
+}
+
+.contact-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-headline);
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0;
+  margin-bottom: var(--space-12);
+  position: relative;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-rule);
+}
+
+.contact-heading::before {
+  content: '05';
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-index, 0.65rem);
+  font-weight: 400;
+  color: var(--color-index, #9A9590);
+  letter-spacing: 0.12em;
+  margin-bottom: var(--space-4);
+}
+
+.contact-display {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5.5vw, 4.5rem);
+  font-weight: 800;
+  color: var(--color-ink);
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  margin: 0;
+  margin-bottom: var(--space-4);
+}
+
+.contact-subtext {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 300;
+  color: var(--color-muted);
+  line-height: 1.65;
+  max-width: 52ch;
+  margin: 0;
+  margin-bottom: var(--space-8);
+}
+
+.contact-email-wrapper {
+  margin-bottom: var(--space-12);
+}
+
+.contact-email-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3vw, 2.25rem);
+  font-weight: 700;
+  color: var(--color-ink);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  padding-bottom: 4px;
+}
+
+.contact-email-arrow {
+  font-size: 0.8em;
+  color: var(--color-accent);
+  transition: transform 200ms var(--ease-out-strong);
+}
+
+.contact-email-link:hover .contact-email-arrow {
+  transform: translate(3px, -3px);
+}
+
+.contact-email-underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-accent);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 220ms var(--ease-out-strong);
+}
+
+.contact-email-link:hover .contact-email-underline,
+.contact-email-link:focus-visible .contact-email-underline {
+  clip-path: inset(0 0% 0 0);
+}
+
+.contact-socials {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  letter-spacing: 0.06em;
+}
+
+.contact-social-link {
+  color: var(--color-ink);
+  text-decoration: none;
+  transition: color 180ms ease-out;
+}
+
+.contact-social-link:hover {
+  color: var(--color-accent);
+}
+
+.contact-social-sep {
+  color: var(--color-border);
+}
+
+.contact-location {
+  color: var(--color-muted);
+}
+
+@media (max-width: 640px) {
+  .contact-heading {
+    margin-bottom: var(--space-8);
+  }
+
+  .contact-subtext {
+    font-size: var(--text-base);
+  }
+
+  .contact-email-wrapper {
+    margin-bottom: var(--space-8);
+  }
+
+  .contact-socials {
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-3);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   FOOTER COMPONENT
+   Dark background (#131110). Full width.
+   Single bookend section.
+───────────────────────────────────────────────────────────── */
+.footer-root {
+  background-color: var(--color-footer-bg);
+  color: color-mix(in srgb, var(--color-canvas) 70%, transparent);
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-8);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+}
+
+.footer-left,
+.footer-right {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+}
+
