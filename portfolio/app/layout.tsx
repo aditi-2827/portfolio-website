@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Outfit, JetBrains_Mono } from "next/font/google";
 import Nav from "@/components/nav/Nav";
+import { DevModeProvider } from "@/components/DevModeContext";
 import "./globals.css";
 
 // ─── Cabinet Grotesk ──────────────────────────────────────────────────────────
@@ -69,12 +70,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={fontVars}>
       <body>
-        {/* Skip to content — first focusable element for keyboard / screen reader users */}
-        <a href="#main-content" className="skip-to-content">
-          Skip to content
-        </a>
-        <Nav />
-        <main id="main-content">{children}</main>
+        <DevModeProvider>
+          {/* Skip to content — first focusable element for keyboard / screen reader users */}
+          <a href="#main-content" className="skip-to-content">
+            Skip to content
+          </a>
+          <Nav />
+          <main id="main-content">{children}</main>
+        </DevModeProvider>
       </body>
     </html>
   );
