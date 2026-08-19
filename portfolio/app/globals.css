@@ -430,15 +430,18 @@ button,
 
 /* ─────────────────────────────────────────────────────────────
    HERO COMPONENT
-   Two-column layout: content left, image right.
-   Dev mode toggle transforms the entire hero.
+   Full-bleed background image (portfolio poster).
+   Layer order:
+     1. Background image (z-index: 0)
+     2. Gradient overlay (z-index: 1)
+     3. Foreground content (z-index: 2)
 ───────────────────────────────────────────────────────────── */
 .hero-section {
   min-height: 100dvh;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   padding-top: 7rem;
-  padding-bottom: 4rem;
+  padding-bottom: clamp(3rem, 6vw, 5rem);
   position: relative;
   overflow: hidden;
   transition: background-color 600ms var(--ease-out-strong);
@@ -447,43 +450,54 @@ button,
 .hero-inner {
   width: 100%;
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
-/* Background watermark text — hidden by default, visible in dev mode */
-.hero-bg-watermark {
+/* ── Layer 1: Background image ─────────────────────────────── */
+.hero-bg-image {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(6rem, 18vw, 18rem);
-  color: transparent;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  white-space: nowrap;
-  pointer-events: none;
-  user-select: none;
+  inset: 0;
   z-index: 0;
-  opacity: 0;
-  transition: opacity 600ms var(--ease-out-strong);
+  pointer-events: none;
 }
 
-/* Two-column layout */
-.hero-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-12);
-  align-items: center;
+.hero-bg-image-el {
+  object-fit: cover;
+  object-position: center 20%;
+  width: 100%;
+  height: 100%;
+  transition: filter 600ms ease, opacity 600ms ease;
+  /* Normal mode: desaturated and subtle so text is readable */
+  filter: grayscale(60%) brightness(0.35);
+  opacity: 0.45;
 }
 
-/* Content column */
+/* ── Layer 2: Gradient overlay ─────────────────────────────── */
+.hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* Left-heavy gradient so text side is always readable */
+  background: linear-gradient(
+    100deg,
+    rgba(237, 234, 228, 0.92) 0%,
+    rgba(237, 234, 228, 0.78) 35%,
+    rgba(237, 234, 228, 0.45) 60%,
+    rgba(237, 234, 228, 0.15) 85%,
+    transparent 100%
+  );
+  transition: background 700ms var(--ease-out-strong);
+}
+
+/* ── Foreground content ────────────────────────────────────── */
 .hero-content {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
-  max-width: 820px;
+  max-width: 680px;
+  position: relative;
+  z-index: 3;
 }
 
 /* ── Role label ─────────────────────────────────────────────── */
@@ -512,6 +526,8 @@ button,
   word-break: break-word;
   margin: 0;
   transition: color 400ms ease;
+  /* Text shadow for readability over image */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 /* ── Blinking cursor ────────────────────────────────────────── */
@@ -627,13 +643,14 @@ button,
   font-weight: 500;
   letter-spacing: 0.06em;
   color: var(--color-muted);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--color-border);
   border-radius: 100px;
   padding: 0.45rem 1rem;
   cursor: pointer;
   min-height: 36px;
-  min-width: auto;
   transition: all 300ms var(--ease-out-strong);
   text-transform: uppercase;
   position: relative;
@@ -644,6 +661,7 @@ button,
   border-color: var(--color-accent);
   color: var(--color-accent);
   box-shadow: 0 0 20px rgba(232, 83, 26, 0.15);
+  background: rgba(232, 83, 26, 0.06);
 }
 
 .dev-mode-toggle-icon {
@@ -660,7 +678,7 @@ button,
   height: 6px;
   border-radius: 50%;
   background-color: var(--color-muted);
-  transition: background-color 300ms ease;
+  transition: background-color 300ms ease, box-shadow 300ms ease;
 }
 
 .dev-mode-toggle:hover .dev-mode-toggle-dot {
@@ -699,43 +717,6 @@ button,
   text-transform: uppercase;
 }
 
-/* ── Hero Image Column ─────────────────────────────────────── */
-.hero-image-col {
-  display: none;
-}
-
-.hero-image-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-.hero-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  position: relative;
-  z-index: 2;
-  /* Clip the image to give it an interesting shape */
-  border-radius: 8px;
-  filter: grayscale(20%);
-  transition: filter 600ms ease;
-}
-
-.hero-image-glow {
-  position: absolute;
-  inset: -20%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(232, 83, 26, 0) 0%,
-    rgba(232, 83, 26, 0) 100%
-  );
-  z-index: 1;
-  pointer-events: none;
-  transition: background 600ms ease;
-}
-
 /* ── GitHub Graph Section ──────────────────────────────────── */
 .hero-github-section {
   margin-top: var(--space-12);
@@ -744,21 +725,24 @@ button,
 }
 
 /* ── Hero responsive ────────────────────────────────────────── */
-@media (min-width: 768px) {
-  .hero-layout {
-    grid-template-columns: 1fr 0.65fr;
-    gap: var(--space-16);
-  }
-
-  .hero-image-col {
-    display: block;
-  }
-}
-
 @media (max-width: 767px) {
   .hero-section {
     padding-top: 6rem;
     padding-bottom: 3rem;
+    align-items: center;
+  }
+
+  .hero-bg-image-el {
+    object-position: 60% center;
+  }
+
+  .hero-bg-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(237, 234, 228, 0.75) 0%,
+      rgba(237, 234, 228, 0.65) 50%,
+      rgba(237, 234, 228, 0.50) 100%
+    );
   }
 
   .hero-content {
@@ -1725,3 +1709,527 @@ button,
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   DEV MODE TRANSITION OVERLAY
+   Fullscreen dark curtain that covers the screen while theme flips.
+   Slides in from bottom, shows loading text, then slides out upward.
+═══════════════════════════════════════════════════════════════ */
+@keyframes dev-transition-in {
+  0%   { clip-path: inset(100% 0 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes dev-transition-out {
+  0%   { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 100% 0); }
+}
+
+@keyframes scanline-move {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes dot-pulse {
+  0%, 80%, 100% { opacity: 0; transform: scale(0.6); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+.dev-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  clip-path: inset(100% 0 0 0);
+  background: #0a0908;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dev-transition--active {
+  pointer-events: all;
+  animation:
+    dev-transition-in 500ms cubic-bezier(0.77, 0, 0.175, 1) forwards,
+    dev-transition-out 500ms cubic-bezier(0.77, 0, 0.175, 1) 900ms forwards;
+}
+
+.dev-transition-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Scanlines */
+.dev-transition-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(232, 83, 26, 0.03) 2px,
+    rgba(232, 83, 26, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.dev-transition--active .dev-transition-scanlines::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(232, 83, 26, 0.6),
+    transparent
+  );
+  animation: scanline-move 0.8s linear infinite;
+}
+
+.dev-transition-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dev-transition-bracket {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.dev-transition-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.dev-transition-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dev-transition-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  opacity: 0;
+}
+
+.dev-transition--active .dev-transition-dot:nth-child(1) {
+  animation: dot-pulse 1s infinite 0ms;
+}
+.dev-transition--active .dev-transition-dot:nth-child(2) {
+  animation: dot-pulse 1s infinite 200ms;
+}
+.dev-transition--active .dev-transition-dot:nth-child(3) {
+  animation: dot-pulse 1s infinite 400ms;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   DEV MODE THEME — GLOBAL DARK/RED OVERRIDES
+   Applied when <html data-dev-mode="true">
+   Everything transitions to a dark background with red accent
+   gradients inspired by the reference image.
+═══════════════════════════════════════════════════════════════ */
+html[data-dev-mode="true"] {
+  --color-canvas:       #0a0908;
+  --color-surface:      #141210;
+  --color-ink:          #F0ECE6;
+  --color-muted:        #8A8580;
+  --color-border:       #2a2622;
+  --color-footer-bg:    #050403;
+  --color-rule:         #2a2622;
+  --color-index:        #6A6560;
+}
+
+/* ── Body transition ───────────────────────────────────────── */
+html[data-dev-mode="true"] body {
+  background-color: #0a0908;
+  color: #F0ECE6;
+}
+
+/* ── Nav in dev mode ───────────────────────────────────────── */
+html[data-dev-mode="true"] .nav-root {
+  background-color: transparent;
+}
+
+html[data-dev-mode="true"] .nav-root[data-scrolled="true"] {
+  background-color: rgba(10, 9, 8, 0.92);
+  border-bottom-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .nav-wordmark {
+  color: #F0ECE6;
+}
+
+html[data-dev-mode="true"] .nav-link {
+  color: #F0ECE6;
+}
+
+/* ── Hero in dev mode ──────────────────────────────────────── */
+html[data-dev-mode="true"] .hero-section {
+  background: #0a0908;
+}
+
+html[data-dev-mode="true"] .hero-bg-image-el {
+  filter: grayscale(0%) contrast(1.18) brightness(0.92);
+  opacity: 0.9;
+}
+
+html[data-dev-mode="true"] .hero-bg-overlay {
+  background: linear-gradient(
+    100deg,
+    rgba(10, 9, 8, 0.94) 0%,
+    rgba(10, 9, 8, 0.80) 40%,
+    rgba(22, 10, 8, 0.45) 70%,
+    rgba(232, 83, 26, 0.15) 100%
+  );
+}
+
+@media (max-width: 767px) {
+  html[data-dev-mode="true"] .hero-bg-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(10, 9, 8, 0.90) 0%,
+      rgba(10, 9, 8, 0.78) 50%,
+      rgba(15, 8, 6, 0.88) 100%
+    );
+  }
+}
+
+html[data-dev-mode="true"] .hero-bg-watermark {
+  opacity: 0.3;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(232, 83, 26, 0.15);
+  text-stroke: 1px rgba(232, 83, 26, 0.15);
+}
+
+html[data-dev-mode="true"] .hero-name {
+  color: #F0ECE6;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(232, 83, 26, 0.15);
+}
+
+html[data-dev-mode="true"] .hero-cursor {
+  background-color: var(--color-accent);
+  box-shadow: 0 0 12px rgba(232, 83, 26, 0.9);
+}
+
+html[data-dev-mode="true"] .hero-role {
+  color: var(--color-accent);
+  border-left-color: var(--color-accent);
+  text-shadow: 0 0 12px rgba(232, 83, 26, 0.4);
+}
+
+html[data-dev-mode="true"] .hero-subtext {
+  color: #A09A92;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+html[data-dev-mode="true"] .hero-link--primary {
+  color: #F0ECE6;
+}
+
+html[data-dev-mode="true"] .hero-link--secondary {
+  color: #8A8580;
+}
+
+html[data-dev-mode="true"] .hero-link--secondary:hover {
+  color: #F0ECE6;
+}
+
+/* ── Toggle button in dev mode ─────────────────────────────── */
+html[data-dev-mode="true"] .dev-mode-toggle {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(232, 83, 26, 0.12);
+  box-shadow: 0 0 25px rgba(232, 83, 26, 0.25),
+              inset 0 0 15px rgba(232, 83, 26, 0.1);
+}
+
+html[data-dev-mode="true"] .dev-mode-toggle:hover {
+  background: rgba(232, 83, 26, 0.22);
+  box-shadow: 0 0 35px rgba(232, 83, 26, 0.35),
+              inset 0 0 20px rgba(232, 83, 26, 0.15);
+}
+
+html[data-dev-mode="true"] .dev-mode-toggle-dot {
+  background-color: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent);
+  animation: dot-pulse 2s infinite;
+}
+
+/* ── Stats in dev mode ─────────────────────────────────────── */
+html[data-dev-mode="true"] .hero-stat-value {
+  text-shadow: 0 0 20px rgba(232, 83, 26, 0.6);
+}
+
+html[data-dev-mode="true"] .hero-stat-label {
+  color: #8A8580;
+}
+
+/* ── Section dividers in dev mode ──────────────────────────── */
+html[data-dev-mode="true"] .section-divider {
+  background-color: #2a2622;
+}
+
+/* ── About section in dev mode ─────────────────────────────── */
+html[data-dev-mode="true"] .about-section {
+  background-color: #0a0908;
+}
+
+html[data-dev-mode="true"] .about-heading,
+html[data-dev-mode="true"] .about-body {
+  color: #F0ECE6;
+}
+
+html[data-dev-mode="true"] .about-meta {
+  color: #6A6560;
+  border-top-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .about-heading::before {
+  color: #6A6560;
+}
+
+html[data-dev-mode="true"] .about-heading {
+  border-top-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .about-monogram {
+  color: #F0ECE6;
+  opacity: 0.03;
+}
+
+/* ── Projects section in dev mode ──────────────────────────── */
+html[data-dev-mode="true"] .projects-section {
+  background-color: #0a0908;
+}
+
+html[data-dev-mode="true"] .projects-heading {
+  color: #F0ECE6;
+  border-top-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .projects-heading::before {
+  color: #6A6560;
+}
+
+html[data-dev-mode="true"] .projects-list {
+  border-top-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .project-row {
+  border-bottom-color: #2a2622;
+  color: #F0ECE6;
+}
+
+html[data-dev-mode="true"] .project-title {
+  color: #F0ECE6;
+}
+
+html[data-dev-mode="true"] .project-desc {
+  color: #6A6560;
+}
+
+html[data-dev-mode="true"] .project-index {
+  color: #6A6560;
+}
+
+html[data-dev-mode="true"] .project-tag {
+  color: #6A6560;
+  border-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .project-arrow {
+  color: #6A6560;
+}
+
+/* Dev mode project row hover */
+@media (hover: hover) and (pointer: fine) {
+  html[data-dev-mode="true"] .project-row:hover {
+    background-color: #1a0c08;
+    background-image: linear-gradient(
+      90deg,
+      rgba(232, 83, 26, 0.05) 0%,
+      transparent 100%
+    );
+  }
+
+  html[data-dev-mode="true"] .project-row:hover .project-title {
+    color: var(--color-accent);
+  }
+
+  html[data-dev-mode="true"] .project-row:hover .project-desc {
+    color: #8A8580;
+    opacity: 1;
+  }
+
+  html[data-dev-mode="true"] .project-row:hover .project-tag {
+    color: #8A8580;
+    border-color: rgba(232, 83, 26, 0.2);
+    opacity: 1;
+  }
+
+  html[data-dev-mode="true"] .project-row:hover .project-arrow {
+    color: var(--color-accent);
+  }
+
+  html[data-dev-mode="true"] .project-row:hover .project-index {
+    color: var(--color-accent);
+    opacity: 0.6;
+  }
+}
+
+html[data-dev-mode="true"] .project-preview--placeholder {
+  background-color: #1a0c08;
+}
+
+/* ── Skills section in dev mode ────────────────────────────── */
+html[data-dev-mode="true"] .skills-section {
+  background-color: #0a0908;
+}
+
+html[data-dev-mode="true"] .skills-heading {
+  color: #F0ECE6;
+  border-top-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .skills-heading::before {
+  color: #6A6560;
+}
+
+html[data-dev-mode="true"] .skills-grid {
+  border-top-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .skills-category {
+  border-bottom-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .skills-label {
+  color: #6A6560;
+}
+
+html[data-dev-mode="true"] .skills-items {
+  color: #F0ECE6;
+}
+
+/* ── Exploring section in dev mode ─────────────────────────── */
+html[data-dev-mode="true"] .exploring-section {
+  background-color: #0a0908;
+}
+
+html[data-dev-mode="true"] .exploring-heading {
+  color: #F0ECE6;
+  border-top-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .exploring-heading::before {
+  color: #6A6560;
+}
+
+html[data-dev-mode="true"] .exploring-list {
+  border-top-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .exploring-item {
+  border-bottom-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .exploring-topic {
+  color: #F0ECE6;
+}
+
+html[data-dev-mode="true"] .exploring-note {
+  color: #6A6560;
+}
+
+/* ── Contact section in dev mode ───────────────────────────── */
+html[data-dev-mode="true"] .contact-section {
+  background-color: #0a0908;
+}
+
+html[data-dev-mode="true"] .contact-heading {
+  color: #F0ECE6;
+  border-top-color: #2a2622;
+}
+
+html[data-dev-mode="true"] .contact-heading::before {
+  color: #6A6560;
+}
+
+html[data-dev-mode="true"] .contact-display {
+  color: #F0ECE6;
+}
+
+html[data-dev-mode="true"] .contact-subtext {
+  color: #6A6560;
+}
+
+html[data-dev-mode="true"] .contact-email-link {
+  color: #F0ECE6;
+}
+
+html[data-dev-mode="true"] .contact-social-link {
+  color: #8A8580;
+}
+
+html[data-dev-mode="true"] .contact-social-link:hover {
+  color: var(--color-accent);
+}
+
+html[data-dev-mode="true"] .contact-social-sep {
+  color: #2a2622;
+}
+
+html[data-dev-mode="true"] .contact-location {
+  color: #6A6560;
+}
+
+/* ── Footer in dev mode ────────────────────────────────────── */
+html[data-dev-mode="true"] .footer-root {
+  background-color: #050403;
+  border-top-color: #1a1816;
+}
+
+/* ── Selection in dev mode ─────────────────────────────────── */
+html[data-dev-mode="true"] ::selection {
+  background-color: var(--color-accent);
+  color: #FFFFFF;
+}
+
+/* ── Focus rings in dev mode ───────────────────────────────── */
+html[data-dev-mode="true"] :focus-visible {
+  outline-color: var(--color-accent);
+}
+
+/* ── Global transition for smooth theme switching ──────────── */
+body,
+.hero-section,
+.about-section,
+.projects-section,
+.skills-section,
+.exploring-section,
+.contact-section,
+.footer-root,
+.nav-root,
+.section-divider {
+  transition:
+    background-color 500ms var(--ease-out-strong),
+    color 500ms var(--ease-out-strong),
+    border-color 500ms var(--ease-out-strong);
+}

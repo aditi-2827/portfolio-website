@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Outfit, JetBrains_Mono } from "next/font/google";
 import Nav from "@/components/nav/Nav";
 import { DevModeProvider } from "@/components/DevModeContext";
+import DevTransition from "@/components/DevTransition";
 import "./globals.css";
 
 // ─── Cabinet Grotesk ──────────────────────────────────────────────────────────
@@ -75,6 +76,7 @@ export default function RootLayout({
           <a href="#main-content" className="skip-to-content">
             Skip to content
           </a>
+          <DevTransition />
           <Nav />
           <main id="main-content">{children}</main>
         </DevModeProvider>

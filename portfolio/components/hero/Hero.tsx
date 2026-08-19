@@ -27,6 +27,9 @@ const DEV_STATS = [
 ];
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
+// The hero image is the full-bleed background. All content sits above it.
+// Layer order: background image → gradient overlay → foreground content.
+// ─────────────────────────────────────────────────────────────────────────────
 export default function Hero() {
   const { devMode, toggleDevMode } = useDevMode();
   const roleProps = useVariant(0.1);
@@ -40,120 +43,104 @@ export default function Hero() {
       aria-label="Introduction"
       className="hero-section"
     >
-      {/* Dev mode background overlay */}
-      <div className="hero-bg-watermark" aria-hidden="true">
-        DEVELOPER
+      {/* ── Layer 1: Full-bleed background image ────────────── */}
+      <div className="hero-bg-image" aria-hidden="true">
+        <Image
+          src="/images/hero.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="hero-bg-image-el"
+        />
       </div>
 
+      {/* ── Layer 2: Gradient overlay for text readability ──── */}
+      <div className="hero-bg-overlay" aria-hidden="true" />
+
+      {/* ── Layer 3: Foreground content ────────────────────── */}
       <div className="container hero-inner">
-        {/* Two-column layout for dev mode: content left, image right */}
-        <div className="hero-layout">
+        <div className="hero-content">
 
-          {/* Left column — content */}
-          <div className="hero-content">
-
-            {/* Role label */}
-            <motion.p
-              className="hero-role"
-              {...roleProps}
-            >
-              {devMode
-                ? "// developer mode activated"
-                : "Building software. Studying systems."}
-            </motion.p>
-
-            {/* Name + cursor */}
-            <motion.h1
-              className="hero-name"
-              {...nameProps}
-            >
-              Aditi Prajapati
-              <span className="hero-cursor" aria-hidden="true" />
-            </motion.h1>
-
-            {/* Subtext */}
-            <motion.p
-              className="hero-subtext"
-              {...subtextProps}
-            >
-              {devMode
-                ? "Full-stack developer crafting performant, accessible web applications with React, TypeScript, and Node.js — driven by systems thinking and clean architecture."
-                : "I build web experiences that are fast, intentional, and easy to understand. Currently a B.Sc. IT student exploring systems, frontend craft, and what makes software feel right."}
-            </motion.p>
-
-            {/* Links + Dev Mode Toggle */}
-            <motion.div
-              className="hero-links"
-              {...linksProps}
-            >
-              <a href="#work" className="hero-link hero-link--primary">
-                View work
-                <span className="hero-link-arrow" aria-hidden="true">
-                  →
-                </span>
-              </a>
-              <a href="#contact" className="hero-link hero-link--secondary">
-                Get in touch
-              </a>
-
-              {/* Dev Mode Toggle Button */}
-              <button
-                onClick={toggleDevMode}
-                className="dev-mode-toggle"
-                aria-label={devMode ? "Exit developer mode" : "Enter developer mode"}
-                type="button"
-              >
-                <span className="dev-mode-toggle-icon" aria-hidden="true">
-                  {devMode ? "⚡" : "⌨"}
-                </span>
-                <span className="dev-mode-toggle-text">
-                  {devMode ? "Exit Dev Mode" : "Enter Dev Mode"}
-                </span>
-                <span className="dev-mode-toggle-dot" aria-hidden="true" />
-              </button>
-            </motion.div>
-
-            {/* Dev Mode Stats — only visible in dev mode */}
-            <AnimatePresence>
-              {devMode && (
-                <motion.div
-                  className="hero-stats"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.4, ease: EASE }}
-                >
-                  {DEV_STATS.map((stat) => (
-                    <div key={stat.label} className="hero-stat">
-                      <span className="hero-stat-value">{stat.value}</span>
-                      <span className="hero-stat-label">{stat.label}</span>
-                    </div>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Right column — hero image (always visible, styled differently in dev mode) */}
-          <motion.div
-            className="hero-image-col"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.3 }}
+          {/* Role label */}
+          <motion.p
+            className="hero-role"
+            {...roleProps}
           >
-            <div className="hero-image-wrapper">
-              <Image
-                src="/images/hero.png"
-                alt="Aditi Prajapati"
-                width={600}
-                height={750}
-                className="hero-image"
-                priority
-              />
-              {/* Red glow behind image in dev mode */}
-              <div className="hero-image-glow" aria-hidden="true" />
-            </div>
+            {devMode
+              ? "// developer mode activated"
+              : "building software. studying systems."}
+          </motion.p>
+
+          {/* Name + blinking cursor */}
+          <motion.h1
+            className="hero-name"
+            {...nameProps}
+          >
+            Aditi Prajapati
+            <span className="hero-cursor" aria-hidden="true" />
+          </motion.h1>
+
+          {/* Subtext */}
+          <motion.p
+            className="hero-subtext"
+            {...subtextProps}
+          >
+            {devMode
+              ? "Full-stack developer crafting performant, accessible web applications with React, TypeScript, and Node.js — driven by systems thinking and clean architecture."
+              : "I build web experiences that are fast, intentional, and easy to understand. Currently a B.Sc. IT student exploring systems, frontend craft, and what makes software feel right."}
+          </motion.p>
+
+          {/* Links + Dev Mode Toggle */}
+          <motion.div
+            className="hero-links"
+            {...linksProps}
+          >
+            <a href="#work" className="hero-link hero-link--primary">
+              View work
+              <span className="hero-link-arrow" aria-hidden="true">→</span>
+            </a>
+            <a href="#contact" className="hero-link hero-link--secondary">
+              Get in touch
+            </a>
+
+            {/* Dev Mode Toggle */}
+            <button
+              onClick={toggleDevMode}
+              className="dev-mode-toggle"
+              aria-label={devMode ? "Exit developer mode" : "Enter developer mode"}
+              type="button"
+            >
+              <span className="dev-mode-toggle-icon" aria-hidden="true">
+                {devMode ? "⚡" : "⌨"}
+              </span>
+              <span className="dev-mode-toggle-text">
+                {devMode ? "Exit Dev Mode" : "Enter Dev Mode →"}
+              </span>
+              <span className="dev-mode-toggle-dot" aria-hidden="true" />
+            </button>
           </motion.div>
+
+          {/* Dev Mode Stats — only visible in dev mode */}
+          <AnimatePresence>
+            {devMode && (
+              <motion.div
+                className="hero-stats"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4, ease: EASE }}
+              >
+                {DEV_STATS.map((stat) => (
+                  <div key={stat.label} className="hero-stat">
+                    <span className="hero-stat-value">{stat.value}</span>
+                    <span className="hero-stat-label">{stat.label}</span>
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
         </div>
 
         {/* GitHub Graph — only visible in dev mode */}
