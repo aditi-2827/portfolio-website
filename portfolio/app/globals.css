@@ -1,14 +1,7 @@
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────────────────────────
-   DESIGN TOKENS
-   Single source of truth for all design decisions.
-   Accent: Warm Ember Orange (#E8531A)
-   Canvas: Warm Paper (#F6F4F0)
-───────────────────────────────────────────────────────────── */
 :root {
-  /* Color */
-  /* Shifted slightly cooler/darker than warm-paper — more technical, less lifestyle */
+  
   --color-canvas:       #EDEAE4;
   --color-surface:      #F7F5F2;
   --color-ink:          #131110;
@@ -18,9 +11,9 @@
   --color-accent-dark:  #CC4615;
   --color-accent-fg:    #FFFFFF;
   --color-footer-bg:    #131110;
-  /* Technical detail tints — used sparingly */
-  --color-rule:         #C8C3BB;   /* slightly darker rule for structural lines */
-  --color-index:        #9A9590;   /* section index numbers */
+  
+  --color-rule:         #C8C3BB;   
+  --color-index:        #9A9590;   
 
   /* Typography */
   --font-display: var(--font-cabinet), 'Cabinet Grotesk', sans-serif;
