@@ -1,78 +1,115 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-type NavLink = {
-  label: string;
-  href: string;
-};
-
-// ─── Nav links — content lives in one place ───────────────────────────────────
-const NAV_LINKS: NavLink[] = [
-  { label: "Work", href: "#work" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+const SOCIALS = [
+  { name: "GitHub",   href: "https://github.com/aditi-prajapati" },
+  { name: "LinkedIn", href: "https://linkedin.com/in/aditi-prajapati" },
+  { name: "Twitter",  href: "https://twitter.com/aditi_codes" },
 ];
 
-// ─── Nav ──────────────────────────────────────────────────────────────────────
-// Fixed top navigation. Scroll-aware: adds a subtle separator once the user
-// scrolls past the fold. Hover underlines are pure CSS — no JS state for hover
-// (Emil principle: hover runs tens of times/day; keep it in CSS).
-//
-// Mobile menu is kept minimal at Phase 1 — will be extended in later phases
-// if a fullscreen overlay is needed. For now: wordmark + links stack cleanly
-// on small screens via flex-wrap.
-// ─────────────────────────────────────────────────────────────────────────────
+const NAV_LINKS = [
+  { label: "About",    href: "#about" },
+  { label: "Work",     href: "#work" },
+  { label: "Skills",   href: "#skills" },
+  { label: "Contact",  href: "#contact" },
+];
+
 export default function Nav() {
-  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [dark, setDark] = useState(false);
 
-  // Mark nav as scrolled once user passes initial viewport
+  // Track when hero ends so logo/btn colour flips
   useEffect(() => {
-    const threshold = 40;
-
-    const handler = () => {
-      setScrolled(window.scrollY > threshold);
-    };
-
-    // Initial check
-    handler();
-
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
+    const onScroll = () => setDark(window.scrollY > window.innerHeight * 0.85);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Lock body scroll when overlay open
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  const logoLight = open || (!dark);
+  const btnLight  = open || dark;
+
   return (
-    <header
-      className="nav-root"
-      data-scrolled={scrolled}
-      aria-label="Site header"
-    >
-      <div className="nav-inner container">
-        {/* Wordmark */}
+    <>
+      <nav className="nav-root" aria-label="Main navigation">
+        {/* Logo */}
         <a
-          href="/"
-          className="nav-wordmark"
-          aria-label="Aditi Prajapati — home"
+          href="#home"
+          className={`nav-logo ${open ? "nav-logo--light" : dark ? "" : ""}`}
+          style={{ color: open ? "var(--color-white)" : "var(--color-ink)" }}
+          onClick={() => setOpen(false)}
         >
-          Aditi Prajapati
+          AP.
         </a>
 
-        {/* Primary navigation */}
-        <nav aria-label="Primary">
-          <ul className="nav-links" role="list">
-            {NAV_LINKS.map(({ label, href }) => (
-              <li key={href}>
-                <a href={href} className="nav-link">
-                  <span className="nav-link-text">{label}</span>
-                  {/* Underline element — animated via clip-path in CSS */}
-                  <span className="nav-link-underline" aria-hidden="true" />
-                </a>
-              </li>
+        {/* Hamburger */}
+        <button
+          className={`nav-menu-btn ${open ? "nav-menu-btn--open" : ""}`}
+          style={{ "--bar-color": open || dark ? "var(--color-white)" : "var(--color-ink)" } as React.CSSProperties}
+          onClick={() => setOpen(v => !v)}
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+        >
+          <span style={{ backgroundColor: open || dark ? "var(--color-white)" : "var(--color-ink)" }} />
+          <span style={{ backgroundColor: open || dark ? "var(--color-white)" : "var(--color-ink)" }} />
+          <span style={{ backgroundColor: open || dark ? "var(--color-white)" : "var(--color-ink)" }} />
+        </button>
+      </nav>
+
+      {/* Full-screen overlay */}
+      <div
+        className={`nav-overlay ${open ? "nav-overlay--open" : ""}`}
+        aria-hidden={!open}
+      >
+        {/* Email */}
+        <span className="nav-overlay-email-label">E-mail</span>
+        <a
+          href="mailto:aditi@example.com"
+          className="nav-overlay-email"
+          onClick={() => setOpen(false)}
+        >
+          aditi@example.com
+        </a>
+
+        {/* Socials */}
+        <span className="nav-overlay-social-label">Social Media</span>
+        <div className="nav-overlay-socials">
+          {SOCIALS.map(s => (
+            <a
+              key={s.name}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-overlay-social"
+            >
+              {s.name}
+            </a>
+          ))}
+        </div>
+
+        {/* Bottom row */}
+        <div className="nav-overlay-bottom">
+          <nav className="nav-overlay-nav-links" aria-label="Section links">
+            {NAV_LINKS.map(l => (
+              <a
+                key={l.label}
+                href={l.href}
+                className="nav-overlay-nav-link"
+                onClick={() => setOpen(false)}
+              >
+                {l.label}
+              </a>
             ))}
-          </ul>
-        </nav>
+          </nav>
+          <span className="nav-overlay-tagline">Building the web, one line at a time.</span>
+        </div>
       </div>
-    </header>
+    </>
   );
 }
