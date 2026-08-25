@@ -1,97 +1,103 @@
 "use client";
 
-import { useReducedMotion } from "motion/react";
-import { motion } from "motion/react";
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import AnimatedHeaderSection from "@/components/AnimatedHeaderSection";
+import { Icon } from "@iconify/react";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
-// ─── About ────────────────────────────────────────────────────────────────────
-// No photo — ghost monogram "AP" provides visual weight as a purely decorative
-// element. Col-span-8 col-start-3 layout at desktop — same generous inset as
-// other body sections. aria-hidden="true" on the monogram.
-//
-// Scroll reveals: heading + each paragraph enters with whileInView.
-// viewport={{ once: true }} — only animates on first reveal.
-// ─────────────────────────────────────────────────────────────────────────────
+const INTERESTS = [
+  { icon: "lucide:code",      label: "Open-sourcing experiments — rising tides lift all ships" },
+  { icon: "lucide:cpu",       label: "Exploring systems programming & compiler fundamentals" },
+  { icon: "lucide:sparkles",  label: "Frontend craft, micro-interactions & web aesthetics" },
+  { icon: "lucide:mountain",  label: "Hiking & outdoor exploration" },
+];
+
 export default function About() {
-  const shouldReduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const imgRef     = useRef<HTMLImageElement>(null);
 
-  const revealProps = (delay = 0) => ({
-    initial: shouldReduce ? { opacity: 1 } : { opacity: 0, y: 24 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.2 as const },
-    transition: { duration: 0.6, ease: EASE, delay },
-  });
+  useEffect(() => {
+    if (!sectionRef.current || !imgRef.current) return;
+
+    // Scale section down slightly on scroll (depth effect)
+    const scaleAnim = gsap.to(sectionRef.current, {
+      scale: 0.96,
+      ease: "power1.inOut",
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "bottom 85%",
+        end: "bottom 20%",
+        scrub: true,
+      },
+    });
+
+    // Image reveal animation
+    const imgAnim = gsap.fromTo(
+      imgRef.current,
+      { clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)" },
+      {
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        duration: 1.4,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: imgRef.current,
+          start: "top 80%",
+        },
+      }
+    );
+
+    return () => {
+      scaleAnim.kill();
+      imgAnim.kill();
+    };
+  }, []);
 
   return (
     <section
       id="about"
-      aria-label="About Aditi"
+      ref={sectionRef}
       className="about-section"
+      aria-label="About Aditi"
     >
-      <div className="container">
-        <div className="about-inner">
+      <AnimatedHeaderSection
+        subTitle="Innovating with code · Growing through systems"
+        title={"About\nMe"}
+        body="Passionate about clean architecture. I build scalable, high-performance solutions from prototype to production."
+        light={true}
+        triggerOnScroll={true}
+      />
 
-          {/* Ghost monogram — decorative, hidden on mobile */}
-          <span
-            className="about-monogram"
-            aria-hidden="true"
-            role="presentation"
-          >
-            AP
-          </span>
+      <div className="about-content-row">
+        {/* Profile Image */}
+        <div className="about-img-wrap">
+          <img
+            ref={imgRef}
+            src="/images/hero.png"
+            alt="Aditi Prajapati portrait"
+            className="about-img"
+          />
+        </div>
 
-          {/* Content column */}
-          <div className="about-content">
+        {/* Text column */}
+        <div className="about-text-col">
+          <p className="about-body-text">
+            Committed to continuous growth in tech — from web development to system architecture.
+            Every challenge is an opportunity to expand my skills and contribute to meaningful,
+            high-impact projects.
+          </p>
 
-            {/* Section headline */}
-            <motion.h2
-              className="about-heading"
-              {...revealProps(0)}
-            >
-              About
-            </motion.h2>
-
-            {/* Body paragraphs — each reveals sequentially */}
-            <motion.p
-              className="about-body"
-              {...revealProps(0.08)}
-            >
-              I&rsquo;m Aditi — a software developer and B.Sc. Information
-              Technology student based in Mumbai, India. I care about writing
-              code that solves real problems and building interfaces that feel
-              natural to use.
-            </motion.p>
-
-            <motion.p
-              className="about-body"
-              {...revealProps(0.16)}
-            >
-              My work spans web development, system-level thinking, and the
-              intersection of design and engineering. I find the most
-              interesting problems sit at the edges of disciplines — where
-              frontend meets infrastructure, or where UX decisions have
-              architectural consequences.
-            </motion.p>
-
-            <motion.p
-              className="about-body"
-              {...revealProps(0.22)}
-            >
-              When I&rsquo;m not building things, I&rsquo;m reading about
-              distributed systems, exploring how software ages, and learning
-              what separates tools people actually use from ones they
-              abandon.
-            </motion.p>
-
-            {/* Metadata line */}
-            <motion.p
-              className="about-meta"
-              {...revealProps(0.28)}
-            >
-              Mumbai, India&nbsp;&nbsp;·&nbsp;&nbsp;B.Sc. Information Technology
-            </motion.p>
-
+          <div className="about-interests">
+            {INTERESTS.map((item, idx) => (
+              <div key={idx} className="about-interest-item">
+                <Icon icon={item.icon} className="about-interest-icon" />
+                <span>{item.label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
