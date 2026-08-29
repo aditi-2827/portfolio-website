@@ -1,106 +1,85 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
+import AnimatedHeaderSection from "../AnimatedHeaderSection";
+import { AnimatedTextLines } from "../AnimatedTextLines";
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import AnimatedHeaderSection from "@/components/AnimatedHeaderSection";
 import { Icon } from "@iconify/react";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+const About = () => {
+  const text = `Passionate about clean architecture
+    I build scalable, high-performance solutions
+    from prototype to production`;
+  const aboutText = `Committed to continuous growth in tech—from web development to AI research. Every challenge is a chance: expanding skills and contributing to meaningful projects.
+  When I'm not learning:`;
+  const imgRef = useRef<HTMLImageElement>(null);
 
-const INTERESTS = [
-  { icon: "lucide:code",      label: "Open-sourcing experiments — rising tides lift all ships" },
-  { icon: "lucide:cpu",       label: "Exploring systems programming & compiler fundamentals" },
-  { icon: "lucide:sparkles",  label: "Frontend craft, micro-interactions & web aesthetics" },
-  { icon: "lucide:mountain",  label: "Hiking & outdoor exploration" },
-];
-
-export default function About() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const imgRef     = useRef<HTMLImageElement>(null);
-
-  useEffect(() => {
-    if (!sectionRef.current || !imgRef.current) return;
-
-    // Scale section down slightly on scroll (depth effect)
-    const scaleAnim = gsap.to(sectionRef.current, {
-      scale: 0.96,
-      ease: "power1.inOut",
+  useGSAP(() => {
+    gsap.to("#about", {
+      scale: 0.95,
       scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "bottom 85%",
+        trigger: "#about",
+        start: "bottom 80%",
         end: "bottom 20%",
         scrub: true,
       },
+      ease: "power1.inOut",
     });
 
-    // Image reveal animation
-    const imgAnim = gsap.fromTo(
-      imgRef.current,
-      { clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)" },
-      {
+    if (imgRef.current) {
+      gsap.set(imgRef.current, {
+        clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)",
+      });
+      gsap.to(imgRef.current, {
         clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-        duration: 1.4,
+        duration: 2,
         ease: "power4.out",
-        scrollTrigger: {
-          trigger: imgRef.current,
-          start: "top 80%",
-        },
-      }
-    );
-
-    return () => {
-      scaleAnim.kill();
-      imgAnim.kill();
-    };
+        scrollTrigger: { trigger: imgRef.current },
+      });
+    }
   }, []);
 
   return (
-    <section
-      id="about"
-      ref={sectionRef}
-      className="about-section"
-      aria-label="About Aditi"
-    >
+    <section id="about" className="min-h-screen bg-black rounded-b-4xl">
       <AnimatedHeaderSection
-        subTitle="Innovating with code · Growing through systems"
-        title={"About\nMe"}
-        body="Passionate about clean architecture. I build scalable, high-performance solutions from prototype to production."
-        light={true}
-        triggerOnScroll={true}
+        subTitle={"Innovating with code, Growing through technology"}
+        title={"About"}
+        text={text}
+        textColor={"text-white"}
+        withScrollTrigger={true}
       />
-
-      <div className="about-content-row">
-        {/* Profile Image */}
-        <div className="about-img-wrap">
-          <img
-            ref={imgRef}
-            src="/images/hero.png"
-            alt="Aditi Prajapati portrait"
-            className="about-img"
-          />
-        </div>
-
-        {/* Text column */}
-        <div className="about-text-col">
-          <p className="about-body-text">
-            Committed to continuous growth in tech — from web development to system architecture.
-            Every challenge is an opportunity to expand my skills and contribute to meaningful,
-            high-impact projects.
-          </p>
-
-          <div className="about-interests">
-            {INTERESTS.map((item, idx) => (
-              <div key={idx} className="about-interest-item">
-                <Icon icon={item.icon} className="about-interest-icon" />
-                <span>{item.label}</span>
-              </div>
-            ))}
+      <div className="flex flex-col items-center justify-between gap-16 px-1 sm:px-1 md:px-3 lg:px-6 pb-16 text-xl font-light tracking-wide lg:flex-row md:text-2xl lg:text-3xl text-white/60 ultra-small-screen">
+        <img
+          ref={imgRef}
+          src="/images/pfp.png"
+          alt="Aditi Prajapati"
+          className="w-md rounded-3xl"
+        />
+        <div className="w-full">
+          <AnimatedTextLines text={aboutText} className={"w-full"} />
+          <div className="mt-4 space-y-2">
+            <div className="flex items-center gap-3">
+              <Icon icon="lucide:code" className="text-white/80" />
+              <span>Open-sourcing my latest experiment—because rising tides lift all ships</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Icon icon="lucide:search" className="text-white/80" />
+              <span>Exploring new technologies</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Icon icon="lucide:mountain" className="text-white/80" />
+              <span>Hiking the Adirondacks</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Icon icon="lucide:gamepad-2" className="text-white/80" />
+              <span>Gaming</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default About;

@@ -1,94 +1,90 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import React, { useRef } from "react";
+import { AnimatedTextLines } from "./AnimatedTextLines";
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 interface AnimatedHeaderSectionProps {
   subTitle: string;
-  title: string;         // supports \n for line breaks
-  body?: string;
-  light?: boolean;       // true on dark backgrounds
-  titleClass?: string;   // extra size class e.g. "hero-title-size"
-  triggerOnScroll?: boolean;
+  title: string;
+  text: string;
+  textColor: string;
+  withScrollTrigger?: boolean;
 }
 
-export default function AnimatedHeaderSection({
+const AnimatedHeaderSection = ({
   subTitle,
   title,
-  body,
-  light = false,
-  titleClass = "section-title-size",
-  triggerOnScroll = false,
-}: AnimatedHeaderSectionProps) {
-  const rootRef   = useRef<HTMLDivElement>(null);
-  const subRef    = useRef<HTMLSpanElement>(null);
-  const wordsRef  = useRef<HTMLSpanElement[]>([]);
-  const bodyRef   = useRef<HTMLSpanElement>(null);
+  text,
+  textColor,
+  withScrollTrigger = false,
+}: AnimatedHeaderSectionProps) => {
+  const contextRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const shouldSplitTitle = title.includes(" ");
+  const titleParts = shouldSplitTitle ? title.split(" ") : [title];
 
-  const titleLines = title.split("\n");
-
-  useEffect(() => {
-    if (!rootRef.current) return;
-
-    const els = [
-      subRef.current,
-      ...wordsRef.current.filter(Boolean),
-      bodyRef.current,
-    ].filter(Boolean) as HTMLElement[];
-
-    // Set clip-path start state
-    gsap.set(els, { y: "110%", opacity: 0 });
-
-    const anim = gsap.to(els, {
-      y: "0%",
-      opacity: 1,
-      duration: 1.0,
-      stagger: 0.12,
-      ease: "power4.out",
-      ...(triggerOnScroll
+  useGSAP(() => {
+    if (!contextRef.current || !headerRef.current) return;
+    const tl = gsap.timeline({
+      scrollTrigger: withScrollTrigger
         ? {
-            scrollTrigger: {
-              trigger: rootRef.current,
-              start: "top 80%",
-            },
+            trigger: contextRef.current,
           }
-        : { delay: 0.2 }),
+        : undefined,
     });
-
-    return () => { anim.kill(); };
-  }, [triggerOnScroll]);
+    tl.from(contextRef.current, {
+      y: "50vh",
+      duration: 1,
+      ease: "circ.out",
+    });
+    tl.from(
+      headerRef.current,
+      {
+        opacity: 0,
+        y: "200",
+        duration: 1,
+        ease: "circ.out",
+      },
+      "<+0.2"
+    );
+  }, []);
 
   return (
-    <div ref={rootRef} className="animated-header">
-      {/* Subtitle */}
-      <span className="animated-header-subtitle">
-        <span ref={subRef}>{subTitle}</span>
-      </span>
-
-      {/* Title — each line is independently clipped */}
-      <h2
-        className={`animated-header-title ${titleClass} ${light ? "animated-header-title--light" : ""}`}
-      >
-        {titleLines.map((line, i) => (
-          <span key={i} className="animated-header-title-word">
-            <span ref={el => { if (el) wordsRef.current[i] = el; }}>
-              {line}
-            </span>
-          </span>
-        ))}
-      </h2>
-
-      {/* Body */}
-      {body && (
-        <p className={`animated-header-body ${light ? "animated-header-body--light" : ""}`}>
-          <span ref={bodyRef}>{body}</span>
-        </p>
-      )}
+    <div ref={contextRef}>
+      <div style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }}>
+        <div
+          ref={headerRef}
+          className="flex flex-col justify-center gap-12 pt-16 sm:gap-16"
+        >
+          <p
+            className={`text-sm font-light tracking-[0.5rem] uppercase px-1 sm:px-1 md:px-3 lg:px-6 ultra-small-screen ${textColor}`}
+          >
+            {subTitle}
+          </p>
+          <div className="px-1 sm:px-1 md:px-3 lg:px-6 ultra-small-screen">
+            <h1
+              className={`flex flex-col gap-12 uppercase banner-text-responsive sm:gap-16 md:block ${textColor}`}
+            >
+              {titleParts.map((part, index) => (
+                <span key={index}>{part} </span>
+              ))}
+            </h1>
+          </div>
+        </div>
+      </div>
+      <div className={`relative px-1 sm:px-1 md:px-3 lg:px-6 ultra-small-screen ${textColor}`}>
+        <div className="absolute inset-x-0 border-t-2" />
+        <div className="py-12 sm:py-16 text-end">
+          <AnimatedTextLines
+            text={text}
+            className={`font-light uppercase value-text-responsive ${textColor}`}
+          />
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default AnimatedHeaderSection;

@@ -1,115 +1,184 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
-const SOCIALS = [
-  { name: "GitHub",   href: "https://github.com/aditi-prajapati" },
-  { name: "LinkedIn", href: "https://linkedin.com/in/aditi-prajapati" },
-  { name: "Twitter",  href: "https://twitter.com/aditi_codes" },
+const socials = [
+  { name: "MEETING", href: "https://cal.com" },
+  { name: "Twitter", href: "https://twitter.com" },
+  { name: "LinkedIn", href: "https://linkedin.com" },
+  { name: "GitHub", href: "https://github.com/aditi-prajapati" },
 ];
 
-const NAV_LINKS = [
-  { label: "About",    href: "#about" },
-  { label: "Work",     href: "#work" },
-  { label: "Skills",   href: "#skills" },
-  { label: "Contact",  href: "#contact" },
-];
+const Nav = () => {
+  const navRef = useRef<HTMLElement>(null);
+  const linksRef = useRef<(HTMLDivElement | null)[]>([]);
+  const contactRef = useRef<HTMLDivElement>(null);
+  const topLineRef = useRef<HTMLSpanElement>(null);
+  const bottomLineRef = useRef<HTMLSpanElement>(null);
+  const tl = useRef<any>(null);
+  const iconTl = useRef<any>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [showBurger, setShowBurger] = useState(true);
 
-export default function Nav() {
-  const [open, setOpen] = useState(false);
-  const [dark, setDark] = useState(false);
+  useGSAP(() => {
+    gsap.set(navRef.current, { xPercent: 100 });
+    gsap.set([linksRef.current, contactRef.current], {
+      autoAlpha: 0,
+      x: -20,
+    });
 
-  // Track when hero ends so logo/btn colour flips
-  useEffect(() => {
-    const onScroll = () => setDark(window.scrollY > window.innerHeight * 0.85);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    tl.current = gsap
+      .timeline({ paused: true })
+      .to(navRef.current, {
+        xPercent: 0,
+        duration: 1,
+        ease: "power3.out",
+      })
+      .to(
+        linksRef.current,
+        {
+          autoAlpha: 1,
+          x: 0,
+          stagger: 0.1,
+          duration: 0.5,
+          ease: "power2.out",
+        },
+        "<"
+      )
+      .to(
+        contactRef.current,
+        {
+          autoAlpha: 1,
+          x: 0,
+          duration: 0.5,
+          ease: "power2.out",
+        },
+        "<+0.2"
+      );
+
+    iconTl.current = gsap
+      .timeline({ paused: true })
+      .to(topLineRef.current, {
+        rotate: 45,
+        y: 3.3,
+        duration: 0.3,
+        ease: "power2.inOut",
+      })
+      .to(
+        bottomLineRef.current,
+        {
+          rotate: -45,
+          y: -3.3,
+          duration: 0.3,
+          ease: "power2.inOut",
+        },
+        "<"
+      );
   }, []);
 
-  // Lock body scroll when overlay open
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [open]);
+    let lastScrollY = window.scrollY;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setShowBurger(isOpen || currentScrollY <= lastScrollY || currentScrollY < 10);
+      lastScrollY = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isOpen]);
 
-  const logoLight = open || (!dark);
-  const btnLight  = open || dark;
+  const toggleMenu = () => {
+    if (isOpen) {
+      tl.current?.reverse();
+      iconTl.current?.reverse();
+    } else {
+      tl.current?.play();
+      iconTl.current?.play();
+    }
+    setIsOpen(!isOpen);
+  };
+
+  const handleNavClick = (id: string) => {
+    toggleMenu();
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <>
-      <nav className="nav-root" aria-label="Main navigation">
-        {/* Logo */}
-        <a
-          href="#home"
-          className={`nav-logo ${open ? "nav-logo--light" : dark ? "" : ""}`}
-          style={{ color: open ? "var(--color-white)" : "var(--color-ink)" }}
-          onClick={() => setOpen(false)}
-        >
-          AP.
-        </a>
-
-        {/* Hamburger */}
-        <button
-          className={`nav-menu-btn ${open ? "nav-menu-btn--open" : ""}`}
-          style={{ "--bar-color": open || dark ? "var(--color-white)" : "var(--color-ink)" } as React.CSSProperties}
-          onClick={() => setOpen(v => !v)}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-        >
-          <span style={{ backgroundColor: open || dark ? "var(--color-white)" : "var(--color-ink)" }} />
-          <span style={{ backgroundColor: open || dark ? "var(--color-white)" : "var(--color-ink)" }} />
-          <span style={{ backgroundColor: open || dark ? "var(--color-white)" : "var(--color-ink)" }} />
-        </button>
-      </nav>
-
-      {/* Full-screen overlay */}
-      <div
-        className={`nav-overlay ${open ? "nav-overlay--open" : ""}`}
-        aria-hidden={!open}
+      <nav
+        ref={navRef}
+        style={{ transform: "translateX(100%)" }}
+        className="fixed top-0 right-0 z-50 flex flex-col justify-between w-full h-full px-10 uppercase bg-black text-white/80 py-28 gap-y-10 md:w-1/2"
       >
-        {/* Email */}
-        <span className="nav-overlay-email-label">E-mail</span>
-        <a
-          href="mailto:aditi@example.com"
-          className="nav-overlay-email"
-          onClick={() => setOpen(false)}
+        <div className="flex flex-col text-5xl gap-y-2 md:text-6xl lg:text-8xl">
+          {["home", "services", "about", "works", "contact"].map(
+            (section, index) => (
+              <div key={index} ref={(el) => { linksRef.current[index] = el; }}>
+                <a
+                  className="transition-all duration-300 cursor-pointer hover:text-white"
+                  onClick={() => handleNavClick(section)}
+                >
+                  {section}
+                </a>
+              </div>
+            )
+          )}
+        </div>
+        <div
+          ref={contactRef}
+          className="flex flex-col flex-wrap justify-between gap-8 md:flex-row md:items-end"
         >
-          aditi@example.com
-        </a>
-
-        {/* Socials */}
-        <span className="nav-overlay-social-label">Social Media</span>
-        <div className="nav-overlay-socials">
-          {SOCIALS.map(s => (
-            <a
-              key={s.name}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="nav-overlay-social"
-            >
-              {s.name}
-            </a>
-          ))}
+          <div className="font-light">
+            <p className="tracking-wider text-white/50">E-mail</p>
+            <p className="text-sm tracking-widest lowercase text-pretty">
+              hello@example.com
+            </p>
+          </div>
+          <div className="font-light">
+            <p className="tracking-wider text-white/50">Social Media</p>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              {socials.map((social, index) => (
+                <a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm tracking-widest uppercase hover:text-white transition-colors duration-300"
+                >
+                  {"{ "}
+                  {social.name}
+                  {" }"}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
-
-        {/* Bottom row */}
-        <div className="nav-overlay-bottom">
-          <nav className="nav-overlay-nav-links" aria-label="Section links">
-            {NAV_LINKS.map(l => (
-              <a
-                key={l.label}
-                href={l.href}
-                className="nav-overlay-nav-link"
-                onClick={() => setOpen(false)}
-              >
-                {l.label}
-              </a>
-            ))}
-          </nav>
-          <span className="nav-overlay-tagline">Building the web, one line at a time.</span>
-        </div>
+      </nav>
+      <div
+        className="fixed z-50 flex flex-col items-center justify-center gap-1 transition-all duration-300 bg-black rounded-full cursor-pointer w-14 h-14 md:w-20 md:h-20 top-4 right-10"
+        onClick={toggleMenu}
+        style={
+          showBurger
+            ? { clipPath: "circle(50% at 50% 50%)" }
+            : { clipPath: "circle(0% at 50% 50%)" }
+        }
+      >
+        <span
+          ref={topLineRef}
+          className="block w-8 h-0.5 bg-white rounded-full origin-center"
+        ></span>
+        <span
+          ref={bottomLineRef}
+          className="block w-8 h-0.5 bg-white rounded-full origin-center"
+        ></span>
       </div>
     </>
   );
-}
+};
+
+export default Nav;

@@ -1,54 +1,95 @@
 "use client";
 
-const SOCIALS = [
-  { name: "GitHub",   href: "https://github.com/aditi-prajapati" },
-  { name: "LinkedIn", href: "https://linkedin.com/in/aditi-prajapati" },
-  { name: "Twitter",  href: "https://twitter.com/aditi_codes" },
+import { useGSAP } from "@gsap/react";
+import AnimatedHeaderSection from "../AnimatedHeaderSection";
+import Marquee from "../Marquee";
+import gsap from "gsap";
+
+const socials = [
+  { name: "Twitter", href: "https://twitter.com" },
+  { name: "LinkedIn", href: "https://linkedin.com" },
+  { name: "GitHub", href: "https://github.com/aditi-prajapati" },
 ];
 
-export default function Contact() {
+const Contact = () => {
+  const text = `Got a question, job or project Idea?
+    WE’D love to hear from you and discuss further!`;
+  const items = [
+    "Say Hello",
+    "Start A Project",
+    "Open For Work",
+    "Let's Chat",
+    "Get In Touch",
+  ];
+
+  useGSAP(() => {
+    gsap.from(".social-link", {
+      y: 100,
+      opacity: 0,
+      delay: 0.5,
+      duration: 1,
+      stagger: 0.3,
+      ease: "back.out",
+      scrollTrigger: {
+        trigger: ".social-link",
+      },
+    });
+  }, []);
+
   return (
-    <section id="contact" className="contact-section" aria-label="Contact Information">
-      <span className="contact-label">Got a project or idea?</span>
-
-      <h2 className="contact-headline">
-        <a href="mailto:aditi@example.com">
-          Let&apos;s Work<br />
-          Together.
-        </a>
-      </h2>
-
-      <div className="contact-divider" />
-
-      <div className="contact-bottom">
-        <div>
-          <span className="contact-info-label">E-mail</span>
-          <a href="mailto:aditi@example.com" className="contact-info-value">
-            aditi@example.com
-          </a>
-        </div>
-
-        <div>
-          <span className="contact-info-label">Social Media</span>
-          <div className="contact-socials">
-            {SOCIALS.map(s => (
-              <a
-                key={s.name}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="contact-social"
-              >
-                {s.name}
-              </a>
-            ))}
+    <section
+      id="contact"
+      className="flex flex-col justify-between min-h-screen bg-black"
+    >
+      <div>
+        <AnimatedHeaderSection
+          subTitle={"You Dream It, I Code it"}
+          title={"Contact"}
+          text={text}
+          textColor={"text-white"}
+          withScrollTrigger={true}
+        />
+        <div className="flex px-1 sm:px-1 md:px-3 lg:px-6 font-light text-white uppercase lg:text-[32px] text-[26px] leading-none mb-10 ultra-small-screen">
+          <div className="flex flex-col w-full gap-10">
+            <div className="social-link">
+              <h2>E-mail</h2>
+              <div className="w-full h-px my-2 bg-white/30" />
+              <p className="text-xl tracking-wider lowercase md:text-2xl lg:text-3xl">
+                hello@example.com
+              </p>
+            </div>
+            <div className="social-link">
+              <h2>Phone</h2>
+              <div className="w-full h-px my-2 bg-white/30" />
+              <p className="text-xl lowercase md:text-2xl lg:text-3xl">
+                +33 7 12 12 32 12
+              </p>
+            </div>
+            <div className="social-link">
+              <h2>Social Media</h2>
+              <div className="w-full h-px my-2 bg-white/30" />
+              <div className="flex flex-wrap gap-2">
+                {socials.map((social, index) => (
+                  <a
+                    key={index}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs leading-loose tracking-widest uppercase md:text-sm hover:text-white/80 transition-colors duration-200"
+                  >
+                    {"{ "}
+                    {social.name}
+                    {" }"}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <p className="contact-copyright">
-        © {new Date().getFullYear()} Aditi Prajapati. All rights reserved.
-      </p>
+      <Marquee items={items} className="text-white bg-transparent" />
     </section>
   );
-}
+};
+
+export default Contact;
