@@ -2,11 +2,26 @@
 
 import { motion } from "motion/react";
 
+const pointers = [
+  {
+    label: "01 — EDUCATION",
+    text: "B.Sc. Information Technology · Jai Hind College (Autonomous), Mumbai",
+  },
+  {
+    label: "02 — BUILDING",
+    text: "Web development · software systems · data-driven applications",
+  },
+  {
+    label: "03 — EXPERIENCE",
+    text: "Data Analyst · ORM Division · SPAN Communications",
+  },
+];
+
 const About = () => {
   return (
     <section
       id="about"
-      className="relative min-h-[60vh] bg-black text-white px-6 sm:px-12 md:px-16 lg:px-24 py-24 sm:py-32 md:py-40 overflow-hidden flex flex-col justify-center rounded-b-4xl"
+      className="relative min-h-screen bg-black text-white px-6 sm:px-12 md:px-16 lg:px-24 py-24 sm:py-32 md:py-40 overflow-hidden flex flex-col justify-center rounded-t-4xl rounded-b-4xl"
     >
       {/* Subtle Ghost AP Monogram - Decorative Background */}
       <div
@@ -31,24 +46,41 @@ const About = () => {
         </div>
 
         {/* Content Column */}
-        <div className="md:col-span-8 lg:col-span-7 flex flex-col justify-between pt-2 md:pt-4 space-y-8 md:space-y-12">
+        <div className="md:col-span-8 lg:col-span-7 flex flex-col justify-between pt-2 md:pt-4 space-y-10 md:space-y-12">
+          {/* Intro Text */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-6 md:space-y-8 max-w-2xl"
+            className="space-y-4 max-w-2xl"
           >
-            <p className="text-[clamp(1.125rem,1.75vw,1.45rem)] text-white/85 leading-relaxed font-light">
-              I&apos;m a B.Sc. IT student focused on building useful software
-              for the web and exploring how systems work underneath. I enjoy
-              turning ideas into practical, well-structured applications while
-              continuously learning new technologies.
+            <p className="text-[clamp(1.25rem,2vw,1.65rem)] text-white font-medium leading-relaxed">
+              I like understanding how things work—and then building them better.
             </p>
+            <p className="text-[clamp(1.05rem,1.5vw,1.25rem)] text-white/80 leading-relaxed font-light">
+              I&apos;m a B.Sc. IT student who builds software across web development, data, and systems, turning ideas into practical applications while constantly experimenting with what technology can do.
+            </p>
+          </motion.div>
 
-            <p className="text-[clamp(0.8rem,1.1vw,0.95rem)] font-mono text-white/50 tracking-wide uppercase pt-6 border-t border-white/10">
-              Currently exploring: web development · systems · data · AI
-            </p>
+          {/* Pointers List */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-6 pt-6 border-t border-white/10 max-w-2xl"
+          >
+            {pointers.map((pointer, index) => (
+              <div key={index} className="space-y-1">
+                <span className="text-[clamp(0.75rem,1vw,0.875rem)] font-mono text-white/40 tracking-wider uppercase block">
+                  {pointer.label}
+                </span>
+                <p className="text-[clamp(0.95rem,1.3vw,1.125rem)] text-white/90 font-light">
+                  {pointer.text}
+                </p>
+              </div>
+            ))}
           </motion.div>
         </div>
       </div>

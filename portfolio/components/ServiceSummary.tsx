@@ -10,60 +10,94 @@ if (typeof window !== "undefined") {
 
 const ServiceSummary = () => {
   useGSAP(() => {
-    gsap.to("#title-service-1", {
-      xPercent: 20,
-      scrollTrigger: {
-        trigger: "#title-service-1",
-        scrub: true,
-      },
-    });
-    gsap.to("#title-service-2", {
-      xPercent: -30,
-      scrollTrigger: {
-        trigger: "#title-service-2",
-        scrub: true,
-      },
-    });
-    gsap.to("#title-service-3", {
-      xPercent: 100,
-      scrollTrigger: {
-        trigger: "#title-service-3",
-        scrub: true,
-      },
-    });
-    gsap.to("#title-service-4", {
-      xPercent: -100,
-      scrollTrigger: {
-        trigger: "#title-service-4",
-        scrub: true,
-      },
-    });
+    // Row 1: starts centered, scrolls right
+    gsap.fromTo(
+      "#title-service-1",
+      { xPercent: 0 },
+      {
+        xPercent: 4,
+        scrollTrigger: {
+          trigger: "#service-summary-section",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+        },
+      }
+    );
+
+    // Row 2: starts centered, scrolls left
+    gsap.fromTo(
+      "#title-service-2",
+      { xPercent: 0 },
+      {
+        xPercent: -4,
+        scrollTrigger: {
+          trigger: "#service-summary-section",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+        },
+      }
+    );
+
+    // Row 3: starts centered, scrolls right
+    gsap.fromTo(
+      "#title-service-3",
+      { xPercent: 0 },
+      {
+        xPercent: 3,
+        scrollTrigger: {
+          trigger: "#service-summary-section",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+        },
+      }
+    );
+
+    // Row 4: starts centered, scrolls left
+    gsap.fromTo(
+      "#title-service-4",
+      { xPercent: 0 },
+      {
+        xPercent: -3,
+        scrollTrigger: {
+          trigger: "#service-summary-section",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+        },
+      }
+    );
   }, []);
 
   return (
-    <section className="mt-20 overflow-hidden font-light leading-snug text-center mb-42 contact-text-responsive">
-      <div id="title-service-1" className="whitespace-nowrap">
+    <section
+      id="service-summary-section"
+      className="mt-20 overflow-hidden font-light leading-snug text-center mb-42 contact-text-responsive"
+    >
+      <div id="title-service-1">
         <p>Architecture</p>
       </div>
       <div
         id="title-service-2"
-        className="flex items-center justify-center gap-3 translate-x-16 whitespace-nowrap"
+        className="flex items-center justify-center gap-[0.5em]"
       >
         <p className="font-normal">Development</p>
-        <div className="w-10 h-1 md:w-32 bg-gold flex-shrink-0" />
+        <div className="w-[1.5em] h-[0.08em] bg-gold flex-shrink-0" />
         <p>Deployment</p>
       </div>
       <div
         id="title-service-3"
-        className="flex items-center justify-center gap-3 -translate-x-48 whitespace-nowrap"
+        className="flex items-center justify-center gap-[0.5em]"
       >
         <p>APIs</p>
-        <div className="w-10 h-1 md:w-32 bg-gold flex-shrink-0" />
+        <div className="w-[1.5em] h-[0.08em] bg-gold flex-shrink-0" />
         <p className="italic">Frontends</p>
-        <div className="w-10 h-1 md:w-32 bg-gold flex-shrink-0" />
+        <div className="w-[1.5em] h-[0.08em] bg-gold flex-shrink-0" />
         <p>Scalability</p>
       </div>
-      <div id="title-service-4" className="translate-x-48 whitespace-nowrap">
+      <div id="title-service-4">
         <p>Databases</p>
       </div>
     </section>
