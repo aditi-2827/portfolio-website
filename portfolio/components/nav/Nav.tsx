@@ -3,12 +3,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { contactInfo } from "@/lib/data";
 
 const socials = [
-  { name: "MEETING", href: "https://cal.com" },
-  { name: "Twitter", href: "https://twitter.com" },
-  { name: "LinkedIn", href: "https://linkedin.com" },
-  { name: "GitHub", href: "https://github.com/aditi-prajapati" },
+  { name: "GitHub", href: contactInfo.github },
 ];
 
 const Nav = () => {
@@ -116,7 +114,7 @@ const Nav = () => {
         className="fixed top-0 right-0 z-50 flex flex-col justify-between w-full h-full px-10 uppercase bg-black text-white/80 py-28 gap-y-10 md:w-1/2"
       >
         <div className="flex flex-col text-5xl gap-y-2 md:text-6xl lg:text-8xl">
-          {["home", "services", "about", "works", "contact"].map(
+          {["home", "services", "about", "work", "contact"].map(
             (section, index) => (
               <div key={index} ref={(el) => { linksRef.current[index] = el; }}>
                 <a
@@ -134,9 +132,9 @@ const Nav = () => {
           className="flex flex-col flex-wrap justify-between gap-8 md:flex-row md:items-end"
         >
           <div className="font-light">
-            <p className="tracking-wider text-white/50">E-mail</p>
-            <p className="text-sm tracking-widest lowercase text-pretty">
-              hello@example.com
+            <p className="tracking-wider text-white/50">Location</p>
+            <p className="text-sm tracking-widest uppercase text-pretty">
+              {contactInfo.location}
             </p>
           </div>
           <div className="font-light">

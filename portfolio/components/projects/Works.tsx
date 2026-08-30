@@ -5,73 +5,12 @@ import AnimatedHeaderSection from "../AnimatedHeaderSection";
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-
-const projects = [
-  {
-    id: 1,
-    name: "Codeoscope Debugger",
-    description: "An online store specializing in phone accessories with interactive execution visuals.",
-    href: "https://github.com/aditi-prajapati",
-    image: "/images/hero.png",
-    bgImage: "/images/hero.png",
-    frameworks: [
-      { id: 1, name: "React" },
-      { id: 2, name: "Next.js" },
-      { id: 3, name: "Python" },
-      { id: 4, name: "Docker" },
-      { id: 5, name: "Tailwind CSS" },
-    ],
-  },
-  {
-    id: 2,
-    name: "PDF Maker Engine",
-    description: "An online store specializing in rare and decorative plants with a clean interface.",
-    href: "https://github.com/aditi-prajapati",
-    image: "/images/hero.png",
-    bgImage: "/images/hero.png",
-    frameworks: [
-      { id: 1, name: "React" },
-      { id: 2, name: "Next.js" },
-      { id: 3, name: "TypeScript" },
-      { id: 4, name: "Tailwind CSS" },
-    ],
-  },
-  {
-    id: 3,
-    name: "System Metrics Platform",
-    description: "An e-commerce platform for Apple products and accessories with category filtering.",
-    href: "https://github.com/aditi-prajapati",
-    image: "/images/hero.png",
-    bgImage: "/images/hero.png",
-    frameworks: [
-      { id: 1, name: "TypeScript" },
-      { id: 2, name: "WebSockets" },
-      { id: 3, name: "Node.js" },
-      { id: 4, name: "Tailwind CSS" },
-    ],
-  },
-  {
-    id: 4,
-    name: "Awwwards Portfolio Theme",
-    description: "A multi-category online shop featuring electronics with dark mode peel cards.",
-    href: "https://github.com/aditi-prajapati",
-    image: "/images/hero.png",
-    bgImage: "/images/hero.png",
-    frameworks: [
-      { id: 1, name: "Next.js 16" },
-      { id: 2, name: "GSAP" },
-      { id: 3, name: "Three.js" },
-      { id: 4, name: "Tailwind v4" },
-    ],
-  },
-];
+import { projects } from "@/lib/data";
 
 const Works = () => {
   const overlayRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const text = `Featured projects that have been meticulously
-    crafted with passion to drive
-    results and impact.`;
+  const text = `Explore my projects ranging from web applications and developer tools to AI/NLP-based applications, data dashboards, and system-oriented projects.`;
 
   useGSAP(() => {
     gsap.from("#project", {
@@ -124,7 +63,7 @@ const Works = () => {
   return (
     <section id="work" className="flex flex-col min-h-screen">
       <AnimatedHeaderSection
-        subTitle={"Logic meets Aesthetics, Seamlessly"}
+        subTitle={"Practical Projects • Modern Technologies"}
         title={"Works"}
         text={text}
         textColor={"text-black"}
@@ -132,10 +71,13 @@ const Works = () => {
       />
       <div className="relative flex flex-col font-light">
         {projects.map((project, index) => (
-          <div
+          <a
             key={project.id}
+            href={project.href}
+            target="_blank"
+            rel="noopener noreferrer"
             id="project"
-            className="relative flex flex-col gap-1 py-5 cursor-pointer group md:gap-0"
+            className="relative flex flex-col gap-2 py-6 cursor-pointer group md:gap-1 border-b border-black/10"
             onMouseEnter={() => handleMouseEnter(index)}
             onMouseLeave={() => handleMouseLeave(index)}
           >
@@ -147,40 +89,52 @@ const Works = () => {
               className="absolute inset-0 hidden md:block duration-200 bg-black -z-10 clip-path"
             />
 
-            {/* title */}
-            <div className="flex justify-between px-1 sm:px-1 md:px-3 lg:px-6 text-black transition-all duration-500 md:group-hover:px-12 md:group-hover:text-white ultra-small-screen">
-              <h2 className="lg:text-[32px] text-[26px] leading-none">
-                {project.name}
-              </h2>
-              <Icon icon="lucide:arrow-up-right" className="md:size-6 size-5" />
+            {/* title & category */}
+            <div className="flex flex-col md:flex-row justify-between px-1 sm:px-1 md:px-3 lg:px-6 text-black transition-all duration-500 md:group-hover:px-12 md:group-hover:text-white ultra-small-screen gap-2">
+              <div>
+                <span className="text-xs uppercase tracking-widest text-black/50 md:group-hover:text-white/60 block mb-1">
+                  {project.index} — {project.category}
+                </span>
+                <h2 className="lg:text-[32px] text-[24px] font-normal leading-tight">
+                  {project.title}
+                </h2>
+              </div>
+              <Icon icon="lucide:arrow-up-right" className="md:size-6 size-5 self-start md:self-center" />
             </div>
+
+            {/* description */}
+            <div className="px-1 sm:px-1 md:px-3 lg:px-6 transition-all duration-500 md:group-hover:px-12 ultra-small-screen">
+              <p className="text-sm md:text-base text-black/70 md:group-hover:text-white/80 max-w-4xl">
+                {project.portfolioDescription}
+              </p>
+            </div>
+
             {/* divider */}
-            <div className="w-full h-0.5 bg-black/80" />
-            {/* framework */}
-            <div className="flex px-1 sm:px-1 md:px-3 lg:px-6 text-xs leading-loose uppercase transition-all duration-500 md:text-sm gap-x-5 md:group-hover:px-12 ultra-small-screen">
-              {project.frameworks.map((framework) => (
-                <p
-                  key={framework.id}
-                  className="text-black transition-colors duration-500 md:group-hover:text-white"
+            <div className="w-full h-0.5 bg-black/10 my-1" />
+
+            {/* framework tags */}
+            <div className="flex flex-wrap px-1 sm:px-1 md:px-3 lg:px-6 text-xs uppercase transition-all duration-500 gap-2 md:group-hover:px-12 ultra-small-screen">
+              {project.tags.map((tag, tagIdx) => (
+                <span
+                  key={tagIdx}
+                  className="text-black/80 bg-black/5 px-2 py-0.5 rounded md:group-hover:bg-white/10 md:group-hover:text-white transition-colors duration-500"
                 >
-                  {framework.name}
-                </p>
+                  {tag}
+                </span>
               ))}
             </div>
-            {/* mobile preview image */}
-            <div className="relative flex items-center justify-center px-1 sm:px-1 md:px-3 lg:px-6 md:hidden h-[400px] ultra-small-screen">
-              <img
-                src={project.bgImage}
-                alt={`${project.name}-bg-image`}
-                className="object-cover w-full h-full rounded-md brightness-50"
-              />
-              <img
-                src={project.image}
-                alt={`${project.name}-image`}
-                className="absolute bg-center px-14 rounded-xl"
-              />
-            </div>
-          </div>
+
+            {/* preview image if available */}
+            {project.previewImage && (
+              <div className="relative flex items-center justify-center px-1 sm:px-1 md:px-3 lg:px-6 md:hidden h-[240px] ultra-small-screen mt-2">
+                <img
+                  src={project.previewImage}
+                  alt={`${project.title}-preview`}
+                  className="object-cover w-full h-full rounded-lg brightness-90 border border-black/10"
+                />
+              </div>
+            )}
+          </a>
         ))}
       </div>
     </section>

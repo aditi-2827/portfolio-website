@@ -4,19 +4,17 @@ import { Canvas } from "@react-three/fiber";
 import { Planet } from "../Planet";
 import { Environment, Float, Lightformer } from "@react-three/drei";
 import { useMediaQuery } from "react-responsive";
-import AnimatedHeaderSection from "../AnimatedHeaderSection";
+import { personalInfo } from "@/lib/data";
 
 const Hero = () => {
   const isMobile = useMediaQuery({ maxWidth: 853 });
-  const text = `I help growing brands and startups gain an
-unfair advantage through premium
-results driven webs/apps`;
+  const text = `${personalInfo.shortPositioning}\n${personalInfo.role}`;
 
   return (
     <section id="home" className="flex flex-col justify-end min-h-screen relative">
       <AnimatedHeaderSection
-        subTitle={"404 No Bugs Found"}
-        title={"John\u00A0Doe\u00A0Smith"}
+        subTitle={"B.Sc. IT Student • Software & Web Developer"}
+        title={personalInfo.name.replace(/\s+/g, "\u00A0")}
         text={text}
         textColor={"text-black"}
       />

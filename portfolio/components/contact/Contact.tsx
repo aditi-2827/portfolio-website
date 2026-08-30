@@ -4,22 +4,21 @@ import { useGSAP } from "@gsap/react";
 import AnimatedHeaderSection from "../AnimatedHeaderSection";
 import Marquee from "../Marquee";
 import gsap from "gsap";
+import { contactInfo } from "@/lib/data";
 
 const socials = [
-  { name: "Twitter", href: "https://twitter.com" },
-  { name: "LinkedIn", href: "https://linkedin.com" },
-  { name: "GitHub", href: "https://github.com/aditi-prajapati" },
+  { name: "GitHub Profile", href: contactInfo.github },
 ];
 
 const Contact = () => {
-  const text = `Got a question, job or project Idea?
-    WE’D love to hear from you and discuss further!`;
+  const text = `Interested in software development, web applications, or collaboration? 
+    Connect with me on GitHub or reach out!`;
   const items = [
-    "Say Hello",
-    "Start A Project",
-    "Open For Work",
-    "Let's Chat",
-    "Get In Touch",
+    "Building Software",
+    "Studying Systems",
+    "Web Development",
+    "Open Source",
+    "Let's Connect",
   ];
 
   useGSAP(() => {
@@ -43,7 +42,7 @@ const Contact = () => {
     >
       <div>
         <AnimatedHeaderSection
-          subTitle={"You Dream It, I Code it"}
+          subTitle={"Let's Connect & Collaborate"}
           title={"Contact"}
           text={text}
           textColor={"text-white"}
@@ -52,37 +51,25 @@ const Contact = () => {
         <div className="flex px-1 sm:px-1 md:px-3 lg:px-6 font-light text-white uppercase lg:text-[32px] text-[26px] leading-none mb-10 ultra-small-screen">
           <div className="flex flex-col w-full gap-10">
             <div className="social-link">
-              <h2>E-mail</h2>
+              <h2>Location</h2>
               <div className="w-full h-px my-2 bg-white/30" />
-              <p className="text-xl tracking-wider lowercase md:text-2xl lg:text-3xl">
-                hello@example.com
+              <p className="text-xl tracking-wider uppercase md:text-2xl lg:text-3xl">
+                {contactInfo.location}
               </p>
             </div>
             <div className="social-link">
-              <h2>Phone</h2>
+              <h2>GitHub</h2>
               <div className="w-full h-px my-2 bg-white/30" />
               <p className="text-xl lowercase md:text-2xl lg:text-3xl">
-                +33 7 12 12 32 12
+                <a
+                  href={contactInfo.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white/80 underline underline-offset-4"
+                >
+                  {contactInfo.github}
+                </a>
               </p>
-            </div>
-            <div className="social-link">
-              <h2>Social Media</h2>
-              <div className="w-full h-px my-2 bg-white/30" />
-              <div className="flex flex-wrap gap-2">
-                {socials.map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs leading-loose tracking-widest uppercase md:text-sm hover:text-white/80 transition-colors duration-200"
-                  >
-                    {"{ "}
-                    {social.name}
-                    {" }"}
-                  </a>
-                ))}
-              </div>
             </div>
           </div>
         </div>

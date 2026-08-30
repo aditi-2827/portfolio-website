@@ -3,8 +3,9 @@ import Nav from "@/components/nav/Nav";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "John Doe Smith — Developer & Designer",
-  description: "Awwwards-inspired portfolio built with Next.js, Three.js, and GSAP.",
+  title: "Aditi Prajapati — Software & Web Developer",
+  description:
+    "Portfolio of Aditi Prajapati — B.Sc. IT Student, Software Developer, and Web Developer.",
 };
 
 export default function RootLayout({
