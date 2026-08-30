@@ -1,121 +1,55 @@
 "use client";
 
-import { useRef } from "react";
-import AnimatedHeaderSection from "../AnimatedHeaderSection";
-import { AnimatedTextLines } from "../AnimatedTextLines";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { Icon } from "@iconify/react";
-import { personalInfo, academicInfo, experiences, interests } from "@/lib/data";
+import { motion } from "motion/react";
 
 const About = () => {
-  const text = personalInfo.aboutParagraphs[0];
-  const aboutText = personalInfo.aboutParagraphs[1] + "\n" + personalInfo.aboutParagraphs[2];
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  useGSAP(() => {
-    gsap.to("#about", {
-      scale: 0.95,
-      scrollTrigger: {
-        trigger: "#about",
-        start: "bottom 80%",
-        end: "bottom 20%",
-        scrub: true,
-      },
-      ease: "power1.inOut",
-    });
-
-    if (imgRef.current) {
-      gsap.set(imgRef.current, {
-        clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)",
-      });
-      gsap.to(imgRef.current, {
-        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-        duration: 2,
-        ease: "power4.out",
-        scrollTrigger: { trigger: imgRef.current },
-      });
-    }
-  }, []);
-
   return (
-    <section id="about" className="min-h-screen bg-black rounded-b-4xl">
-      <AnimatedHeaderSection
-        subTitle={"Building software • Studying systems"}
-        title={"About"}
-        text={text}
-        textColor={"text-white"}
-        withScrollTrigger={true}
-      />
-      <div className="flex flex-col items-center justify-between gap-16 px-1 sm:px-1 md:px-3 lg:px-6 pb-16 text-xl font-light tracking-wide lg:flex-row md:text-2xl lg:text-3xl text-white/60 ultra-small-screen">
-        <img
-          ref={imgRef}
-          src="/images/pfp.png"
-          alt="Aditi Prajapati"
-          className="w-md rounded-3xl object-cover"
-        />
-        <div className="w-full space-y-6">
-          <AnimatedTextLines text={aboutText} className={"w-full"} />
-          
-          {/* Academic Background */}
-          <div className="mt-6 border-t border-white/20 pt-6">
-            <h3 className="text-white text-2xl font-normal mb-2 flex items-center gap-3">
-              <Icon icon="lucide:graduation-cap" className="text-white/80" />
-              Academic Background
-            </h3>
-            <p className="text-lg text-white/80">
-              <strong className="text-white">{academicInfo.degree}</strong> — {academicInfo.college}
+    <section
+      id="about"
+      className="relative min-h-[60vh] bg-black text-white px-6 sm:px-12 md:px-16 lg:px-24 py-24 sm:py-32 md:py-40 overflow-hidden flex flex-col justify-center rounded-b-4xl"
+    >
+      {/* Subtle Ghost AP Monogram - Decorative Background */}
+      <div
+        aria-hidden="true"
+        className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 font-extrabold text-[clamp(12rem,28vw,26rem)] text-white/[0.03] select-none pointer-events-none hidden md:block leading-none tracking-tighter"
+      >
+        AP
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16 items-start">
+        {/* Visual Anchor Heading */}
+        <div className="md:col-span-4 lg:col-span-5">
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[clamp(3.5rem,8vw,7.5rem)] font-extrabold tracking-tight text-white leading-none uppercase"
+          >
+            ABOUT
+          </motion.h2>
+        </div>
+
+        {/* Content Column */}
+        <div className="md:col-span-8 lg:col-span-7 flex flex-col justify-between pt-2 md:pt-4 space-y-8 md:space-y-12">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-6 md:space-y-8 max-w-2xl"
+          >
+            <p className="text-[clamp(1.125rem,1.75vw,1.45rem)] text-white/85 leading-relaxed font-light">
+              I&apos;m a B.Sc. IT student focused on building useful software
+              for the web and exploring how systems work underneath. I enjoy
+              turning ideas into practical, well-structured applications while
+              continuously learning new technologies.
             </p>
-            <p className="text-sm text-white/50">Expected Graduation: {academicInfo.expectedGraduation}</p>
-          </div>
 
-          {/* Practical Experience */}
-          <div className="border-t border-white/20 pt-6">
-            <h3 className="text-white text-2xl font-normal mb-2 flex items-center gap-3">
-              <Icon icon="lucide:briefcase" className="text-white/80" />
-              Experience
-            </h3>
-            {experiences.map((exp, idx) => (
-              <div key={idx} className="text-lg text-white/80 space-y-1">
-                <p>
-                  <strong className="text-white">{exp.role}</strong> at {exp.company} {exp.client && `(Client: ${exp.client})`}
-                </p>
-                <p className="text-sm text-white/50">{exp.duration}</p>
-                <p className="text-base text-white/70">{exp.experienceDescription}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Career Focus */}
-          <div className="border-t border-white/20 pt-6">
-            <h3 className="text-white text-2xl font-normal mb-3 flex items-center gap-3">
-              <Icon icon="lucide:target" className="text-white/80" />
-              Career Focus
-            </h3>
-            <div className="grid grid-cols-2 gap-2 text-base text-white/80">
-              {personalInfo.careerFocus.map((focus, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <Icon icon="lucide:check-circle-2" className="text-white/60 size-4" />
-                  <span>{focus}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* General Interests */}
-          <div className="border-t border-white/20 pt-6">
-            <h3 className="text-white text-2xl font-normal mb-3 flex items-center gap-3">
-              <Icon icon="lucide:sparkles" className="text-white/80" />
-              Interests
-            </h3>
-            <div className="flex flex-wrap gap-2 text-sm text-white/70">
-              {interests.general.map((item, idx) => (
-                <span key={idx} className="bg-white/10 px-3 py-1 rounded-full text-white/80">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
+            <p className="text-[clamp(0.8rem,1.1vw,0.95rem)] font-mono text-white/50 tracking-wide uppercase pt-6 border-t border-white/10">
+              Currently exploring: web development · systems · data · AI
+            </p>
+          </motion.div>
         </div>
       </div>
     </section>
