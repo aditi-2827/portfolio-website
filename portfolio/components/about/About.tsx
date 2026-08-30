@@ -56,7 +56,7 @@ const About = () => {
 
           {/* Right-aligned Uppercase Technical Statement below the line */}
           <div className="flex justify-end">
-            <p className="text-[clamp(0.8rem,1.05vw,0.95rem)] uppercase font-mono text-white/80 tracking-wider leading-relaxed text-right max-w-lg">
+            <p className="text-[clamp(1rem,1.5vw,1.4rem)] uppercase font-mono text-white/90 tracking-wider leading-relaxed text-right max-w-2xl font-medium">
               CURIOUS ABOUT HOW SOFTWARE WORKS
               <br />
               BUILDING USEFUL SYSTEMS, NOT JUST INTERFACES
