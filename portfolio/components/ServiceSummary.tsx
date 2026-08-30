@@ -42,29 +42,29 @@ const ServiceSummary = () => {
 
   return (
     <section className="mt-20 overflow-hidden font-light leading-snug text-center mb-42 contact-text-responsive">
-      <div id="title-service-1">
-        <p>Web Development</p>
+      <div id="title-service-1" className="whitespace-nowrap">
+        <p>Architecture</p>
       </div>
       <div
         id="title-service-2"
-        className="flex items-center justify-center gap-3 translate-x-16"
+        className="flex items-center justify-center gap-3 translate-x-16 whitespace-nowrap"
       >
-        <p className="font-normal">Python & NLP</p>
-        <div className="w-10 h-1 md:w-32 bg-gold" />
-        <p>Data Analytics</p>
+        <p className="font-normal">Development</p>
+        <div className="w-10 h-1 md:w-32 bg-gold flex-shrink-0" />
+        <p>Deployment</p>
       </div>
       <div
         id="title-service-3"
-        className="flex items-center justify-center gap-3 -translate-x-48"
+        className="flex items-center justify-center gap-3 -translate-x-48 whitespace-nowrap"
       >
-        <p>Big Data</p>
-        <div className="w-10 h-1 md:w-32 bg-gold" />
-        <p className="italic">Distributed Systems</p>
-        <div className="w-10 h-1 md:w-32 bg-gold" />
-        <p>REST APIs</p>
+        <p>APIs</p>
+        <div className="w-10 h-1 md:w-32 bg-gold flex-shrink-0" />
+        <p className="italic">Frontends</p>
+        <div className="w-10 h-1 md:w-32 bg-gold flex-shrink-0" />
+        <p>Scalability</p>
       </div>
-      <div id="title-service-4" className="translate-x-48">
-        <p>Databases & Cloud</p>
+      <div id="title-service-4" className="translate-x-48 whitespace-nowrap">
+        <p>Databases</p>
       </div>
     </section>
   );

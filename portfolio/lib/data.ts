@@ -431,12 +431,14 @@ export const interests = {
 export type ContactInfo = {
   name: string;
   github: string;
+  linkedin: string;
   location: string;
 };
 
 export const contactInfo: ContactInfo = {
   name: "Aditi Prajapati",
   github: "https://github.com/aditi-2827",
+  linkedin: "https://www.linkedin.com/in/aditi-prajapati-406394372",
   location: "Mumbai, India",
 };
 

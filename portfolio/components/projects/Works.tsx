@@ -10,7 +10,7 @@ import { projects } from "@/lib/data";
 const Works = () => {
   const overlayRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const text = `Explore my projects ranging from web applications and developer tools to AI/NLP-based applications, data dashboards, and system-oriented projects.`;
+  const text = `Featured projects meticulously crafted to showcase practical software development and technical problem solving.`;
 
   useGSAP(() => {
     gsap.from("#project", {
@@ -63,7 +63,7 @@ const Works = () => {
   return (
     <section id="work" className="flex flex-col min-h-screen">
       <AnimatedHeaderSection
-        subTitle={"Practical Projects • Modern Technologies"}
+        subTitle={"Logic meets Aesthetics, Seamlessly"}
         title={"Works"}
         text={text}
         textColor={"text-black"}
@@ -77,7 +77,7 @@ const Works = () => {
             target="_blank"
             rel="noopener noreferrer"
             id="project"
-            className="relative flex flex-col gap-2 py-6 cursor-pointer group md:gap-1 border-b border-black/10"
+            className="relative flex flex-col gap-1 py-5 cursor-pointer group md:gap-0"
             onMouseEnter={() => handleMouseEnter(index)}
             onMouseLeave={() => handleMouseLeave(index)}
           >
@@ -89,51 +89,28 @@ const Works = () => {
               className="absolute inset-0 hidden md:block duration-200 bg-black -z-10 clip-path"
             />
 
-            {/* title & category */}
-            <div className="flex flex-col md:flex-row justify-between px-1 sm:px-1 md:px-3 lg:px-6 text-black transition-all duration-500 md:group-hover:px-12 md:group-hover:text-white ultra-small-screen gap-2">
-              <div>
-                <span className="text-xs uppercase tracking-widest text-black/50 md:group-hover:text-white/60 block mb-1">
-                  {project.index} — {project.category}
-                </span>
-                <h2 className="lg:text-[32px] text-[24px] font-normal leading-tight">
-                  {project.title}
-                </h2>
-              </div>
-              <Icon icon="lucide:arrow-up-right" className="md:size-6 size-5 self-start md:self-center" />
-            </div>
-
-            {/* description */}
-            <div className="px-1 sm:px-1 md:px-3 lg:px-6 transition-all duration-500 md:group-hover:px-12 ultra-small-screen">
-              <p className="text-sm md:text-base text-black/70 md:group-hover:text-white/80 max-w-4xl">
-                {project.portfolioDescription}
-              </p>
+            {/* title */}
+            <div className="flex justify-between items-center px-1 sm:px-1 md:px-3 lg:px-6 text-black transition-all duration-500 md:group-hover:px-12 md:group-hover:text-white ultra-small-screen">
+              <h2 className="lg:text-[32px] text-[26px] leading-none">
+                {project.title}
+              </h2>
+              <Icon icon="lucide:arrow-up-right" className="md:size-6 size-5" />
             </div>
 
             {/* divider */}
-            <div className="w-full h-0.5 bg-black/10 my-1" />
+            <div className="w-full h-0.5 bg-black/80 my-2" />
 
             {/* framework tags */}
-            <div className="flex flex-wrap px-1 sm:px-1 md:px-3 lg:px-6 text-xs uppercase transition-all duration-500 gap-2 md:group-hover:px-12 ultra-small-screen">
+            <div className="flex flex-wrap px-1 sm:px-1 md:px-3 lg:px-6 text-xs leading-loose uppercase transition-all duration-500 md:text-sm gap-x-5 md:group-hover:px-12 ultra-small-screen">
               {project.tags.map((tag, tagIdx) => (
-                <span
+                <p
                   key={tagIdx}
-                  className="text-black/80 bg-black/5 px-2 py-0.5 rounded md:group-hover:bg-white/10 md:group-hover:text-white transition-colors duration-500"
+                  className="text-black transition-colors duration-500 md:group-hover:text-white"
                 >
                   {tag}
-                </span>
+                </p>
               ))}
             </div>
-
-            {/* preview image if available */}
-            {project.previewImage && (
-              <div className="relative flex items-center justify-center px-1 sm:px-1 md:px-3 lg:px-6 md:hidden h-[240px] ultra-small-screen mt-2">
-                <img
-                  src={project.previewImage}
-                  alt={`${project.title}-preview`}
-                  className="object-cover w-full h-full rounded-lg brightness-90 border border-black/10"
-                />
-              </div>
-            )}
           </a>
         ))}
       </div>

@@ -11,7 +11,7 @@ const About = () => {
       {/* Subtle Ghost AP Monogram - Decorative Background */}
       <div
         aria-hidden="true"
-        className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 font-extrabold text-[clamp(12rem,28vw,26rem)] text-white/[0.03] select-none pointer-events-none hidden md:block leading-none tracking-tighter"
+        className="absolute right-4 lg:right-12 top-1/2 -translate-y-1/2 font-extrabold text-[clamp(8rem,20vw,18rem)] text-white/[0.03] select-none pointer-events-none hidden md:block leading-none tracking-tighter"
       >
         AP
       </div>

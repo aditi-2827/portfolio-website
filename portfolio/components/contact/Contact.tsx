@@ -71,6 +71,20 @@ const Contact = () => {
                 </a>
               </p>
             </div>
+            <div className="social-link">
+              <h2>LinkedIn</h2>
+              <div className="w-full h-px my-2 bg-white/30" />
+              <p className="text-xl lowercase md:text-2xl lg:text-3xl">
+                <a
+                  href={contactInfo.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white/80 underline underline-offset-4"
+                >
+                  {contactInfo.linkedin}
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
