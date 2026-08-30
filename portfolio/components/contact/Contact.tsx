@@ -11,8 +11,7 @@ const socials = [
 ];
 
 const Contact = () => {
-  const text = `Interested in software development, web applications, or collaboration? 
-    Connect with me on GitHub or reach out!`;
+  const text = `Looking for the next challenge.\nOpen to internships and entry-level roles where I can build, learn, and contribute to meaningful software.`;
   const items = [
     "Building Software",
     "Studying Systems",
@@ -42,7 +41,7 @@ const Contact = () => {
     >
       <div>
         <AnimatedHeaderSection
-          subTitle={"Let's Connect & Collaborate"}
+          subTitle={"OPEN TO OPPORTUNITIES · INTERNSHIPS · COLLABORATIONS"}
           title={"Contact"}
           text={text}
           textColor={"text-white"}
@@ -51,10 +50,15 @@ const Contact = () => {
         <div className="flex px-1 sm:px-1 md:px-3 lg:px-6 font-light text-white uppercase lg:text-[32px] text-[26px] leading-none mb-10 ultra-small-screen">
           <div className="flex flex-col w-full gap-10">
             <div className="social-link">
-              <h2>Location</h2>
+              <h2>Email</h2>
               <div className="w-full h-px my-2 bg-white/30" />
-              <p className="text-xl tracking-wider uppercase md:text-2xl lg:text-3xl">
-                {contactInfo.location}
+              <p className="text-xl lowercase md:text-2xl lg:text-3xl">
+                <a
+                  href={`mailto:${contactInfo.email}`}
+                  className="hover:text-white/80 underline underline-offset-4"
+                >
+                  {contactInfo.email}
+                </a>
               </p>
             </div>
             <div className="social-link">
@@ -83,6 +87,13 @@ const Contact = () => {
                 >
                   {contactInfo.linkedin}
                 </a>
+              </p>
+            </div>
+            <div className="social-link">
+              <h2>Location</h2>
+              <div className="w-full h-px my-2 bg-white/30" />
+              <p className="text-xl tracking-wider uppercase md:text-2xl lg:text-3xl">
+                {contactInfo.location}
               </p>
             </div>
           </div>

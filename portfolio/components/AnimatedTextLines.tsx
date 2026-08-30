@@ -35,16 +35,25 @@ export const AnimatedTextLines = ({ text, className }: AnimatedTextLinesProps) =
   }, []);
 
   return (
-    <div ref={containerRef} className={className}>
-      {lines.map((line, index) => (
-        <span
-          key={index}
-          ref={(el) => { lineRefs.current[index] = el; }}
-          className="block leading-relaxed tracking-wide text-pretty"
-        >
-          {line}
-        </span>
-      ))}
+    <div ref={containerRef} className={`flex flex-col items-end w-full ${className || ""}`}>
+      {lines.map((line, index) => {
+        // Step alignment for 3-step staircase format
+        let stepClass = "w-full text-right";
+        if (lines.length === 3) {
+          if (index === 1) stepClass = "w-full text-right md:max-w-[85%] lg:max-w-[78%] ml-auto";
+          if (index === 2) stepClass = "w-full text-right md:max-w-[70%] lg:max-w-[60%] ml-auto";
+        }
+
+        return (
+          <span
+            key={index}
+            ref={(el) => { lineRefs.current[index] = el; }}
+            className={`block leading-relaxed tracking-wider text-pretty ${stepClass}`}
+          >
+            {line}
+          </span>
+        );
+      })}
     </div>
   );
 };

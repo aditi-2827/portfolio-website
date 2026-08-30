@@ -10,7 +10,7 @@ import { projects } from "@/lib/data";
 const Works = () => {
   const overlayRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const text = `Featured projects meticulously crafted to showcase practical software development and technical problem solving.`;
+  const text = `FEATURED PROJECTS THAT HAVE BEEN METICULOUSLY\nCRAFTED ACROSS FULL-STACK AND SYSTEMS\nTO DELIVER PRACTICAL IMPACT.`;
 
   useGSAP(() => {
     gsap.from("#project", {
@@ -63,7 +63,7 @@ const Works = () => {
   return (
     <section id="work" className="flex flex-col min-h-screen">
       <AnimatedHeaderSection
-        subTitle={"Logic meets Aesthetics, Seamlessly"}
+        subTitle={"PROJECTS · EXPERIMENTS · SYSTEMS"}
         title={"Works"}
         text={text}
         textColor={"text-black"}
