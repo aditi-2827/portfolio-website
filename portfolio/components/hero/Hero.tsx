@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { Planet } from "../Planet";
 import { Environment, Float, Lightformer } from "@react-three/drei";
 import { useMediaQuery } from "react-responsive";
+import AnimatedHeaderSection from "../AnimatedHeaderSection";
 import { personalInfo } from "@/lib/data";
 
 const Hero = () => {
